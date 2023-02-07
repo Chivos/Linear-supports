@@ -7,12 +7,13 @@ left_col = [[sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='listbox')],
     [sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Carre'), size=(10, 5), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur:'), sg.Input(key='-LONGUEUR-', size=(10,1))],
     [sg.Text('Coefficient de longueur K:'), sg.Input(key='-KLONGUEUR-', size=(10,1))],
-    [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(key='-TORSEUR_N-', size=(5,1))],
-                             [sg.Text('Fx'), sg.Input(key='-TORSEUR_FX-', size=(5,1))],
-                             [sg.Text('Fy'), sg.Input(key='-TORSEUR_FY-', size=(5,1))],
-                             [sg.Text('Mx'), sg.Input(key='-TORSEUR_MX-', size=(5,1))],
-                             [sg.Text('My'), sg.Input(key='-TORSEUR_MY-', size=(5,1))],
-                             [sg.Text('Mz'), sg.Input(key='-TORSEUR_MZ-', size=(5,1))]
+    [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', size=(5,1))],
+                             [sg.Text('Fx'), sg.Input(0, key='-TORSEUR_FX-', size=(5,1))],
+                             [sg.Text('Fy'), sg.Input(0, key='-TORSEUR_FY-', size=(5,1))],
+                             *
+                             [sg.Text('Mx'), sg.Input(0, key='-TORSEUR_MX-', size=(5,1))],
+                             [sg.Text('My'), sg.Input(0, key='-TORSEUR_MY-', size=(5,1))],
+                             [sg.Text('Mz'), sg.Input(0, key='-TORSEUR_MZ-', size=(5,1))]
                              ])]
     ]
 
