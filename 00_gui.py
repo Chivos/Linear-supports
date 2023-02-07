@@ -10,17 +10,21 @@ left_col = [[sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='listbox')],
     [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', size=(5,1))],
                              [sg.Text('Fx'), sg.Input(0, key='-TORSEUR_FX-', size=(5,1))],
                              [sg.Text('Fy'), sg.Input(0, key='-TORSEUR_FY-', size=(5,1))],
-                             *
                              [sg.Text('Mx'), sg.Input(0, key='-TORSEUR_MX-', size=(5,1))],
                              [sg.Text('My'), sg.Input(0, key='-TORSEUR_MY-', size=(5,1))],
                              [sg.Text('Mz'), sg.Input(0, key='-TORSEUR_MZ-', size=(5,1))]
+                             ])],
+    [sg.Frame('Matériau:', [[sg.Text('Sy'), sg.Input(235, key='-SY-', size=(5,1))],
+                             [sg.Text('Su'), sg.Input(360, key='-SU-', size=(5,1))],
+                             [sg.Text('E'), sg.Input(210000, key='-MODULE-', size=(8,1))],
+
                              ])]
     ]
 
 
 right_col = [[sg.Text('----', key='-CHOIXPROFILE-')],
     [sg.Image(key='-IMAGEPROFILE-')],
-    [sg.Text('Angle de rotation (degrés, sens trigo)'), sg.Input(key='-ANGLEROT-', size=(10,1))],
+    [sg.Text('Angle de rotation (degrés, sens trigo)'), sg.Input(0, key='-ANGLEROT-', size=(10,1))],
     [sg.Text('Choisir un fichier', size=(35, 1))],
     [sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
     [sg.Button('Exit'), sg.Text(' ' * 40), sg.Button('Run')]]
