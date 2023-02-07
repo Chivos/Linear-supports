@@ -11,6 +11,7 @@ left_col = [[sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='listbox')],
 
 right_col = [[sg.Text('----', key='-CHOIXPROFILE-')],
     [sg.Image(key='-IMAGEPROFILE-')],
+    [sg.Text('Angle de rotation (degrés, sens trigo)'), sg.Input(key='-ANGLEROT-', size=(10,1))],
     [sg.Text('Choisir un fichier', size=(35, 1))],
     [sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
     [sg.Button('Exit'), sg.Text(' ' * 40), sg.Button('Run')]]
@@ -25,7 +26,7 @@ while True:
     event, values = window.read()
     if event in ('Exit', None):
         break
-    if event == "-PROFILE-":  # un profilé a été selectinné
+    if event == "-PROFILE-":  # un profilé a été selectionné
         nom_profile = values["-PROFILE-"]
         window["-CHOIXPROFILE-"].update(nom_profile[0])
         adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
