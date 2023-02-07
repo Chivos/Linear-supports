@@ -31,8 +31,8 @@ while True:
         adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
         window['-IMAGEPROFILE-'].update(adresse)
 
-        #if "IPN" in nom_profile:
-            #adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\IPN.png"
+        if nom_profile[0] == "IPN":
+            print("IPN")
             
 
 window.close()
