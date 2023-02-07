@@ -3,8 +3,8 @@ import PySimpleGUI as sg
 
 
 sg.theme('TanBlue')
-left_col = [[sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='listbox')],
-    [sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Carre'), size=(10, 5), enable_events=True, key="-PROFILE-")],
+col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='listbox')],
+    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Carre'), size=(10, 6), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur:'), sg.Input(key='-LONGUEUR-', size=(10,1))],
     [sg.Text('Coefficient de longueur K:'), sg.Input(key='-KLONGUEUR-', size=(10,1))],
     [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', size=(5,1))],
@@ -22,14 +22,25 @@ left_col = [[sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='listbox')],
     ]
 
 
-right_col = [[sg.Text('----', key='-CHOIXPROFILE-')],
+col_image = [[sg.Text('----', key='-CHOIXPROFILE-')],
     [sg.Image(key='-IMAGEPROFILE-')],
     [sg.Text('Angle de rotation (degrés, sens trigo)'), sg.Input(0, key='-ANGLEROT-', size=(10,1))],
-    [sg.Text('Choisir un fichier', size=(35, 1))],
-    [sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
-    [sg.Button('Exit'), sg.Text(' ' * 40), sg.Button('Run')]]
+    #[sg.Text('Choisir un fichier', size=(35, 1))],
+    #[sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
+    [sg.Button('Quitter'), sg.Text(' ' * 40), sg.Button('Run')]]
 
-layout = [[sg.Column(left_col, element_justification='c'), sg.VSeperator(),sg.Column(right_col, element_justification='c')]]
+
+col_IPN = [[sg.Text('Hauteur'), sg.Input(0, key='-HAUTEUR-', size=(10,1))],
+    [sg.Text('Test IPN')]]
+
+col_IPE = [[sg.Text('Hauteur'), sg.Input(0, key='-HAUTEUR-', size=(10,1))],
+    [sg.Text('Test IPE')]]
+
+layout = [[sg.Column(col_parametres, element_justification='c'),
+        sg.VSeperator(),
+        sg.Column(col_image, element_justification='c'),
+        sg.Column(col_IPN, element_justification='c', visible=False, key='col_IPN'),
+        sg.Column(col_IPE, element_justification='c', visible=False, key='col_IPE')]]
 
 
 
@@ -37,7 +48,7 @@ window = sg.Window('Dépouillement supports linéaires RCCM ZVI', layout, defaul
 
 while True:
     event, values = window.read()
-    if event in ('Exit', None):
+    if event in ('Quitter', None):
         break
     if event == "-PROFILE-":  # un profilé a été selectionné
         nom_profile = values["-PROFILE-"]
@@ -45,9 +56,14 @@ while True:
         adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
         window['-IMAGEPROFILE-'].update(adresse)
 
+        window['col_IPE'].update(visible=False)
+        window['col_IPN'].update(visible=False)
+
         if nom_profile[0] == "IPN":
-            print("IPN")
-            
+            window['col_IPN'].update(visible=True)
+
+        if nom_profile[0] == "IPE":
+            window['col_IPE'].update(visible=True)
 
 window.close()
 
