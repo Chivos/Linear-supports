@@ -111,7 +111,7 @@ while True:
         window['col_Carre'].update(visible=False)
 
         torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'], 'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
-        param_gene #paramètres génériques : longueur, matériau, maillage
+        param_gene = {'Maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-']} #paramètres génériques : longueur, matériau, maillage
 
         if nom_profile[0] == "IPN":
             window['col_IPN'].update(visible=True)
@@ -134,10 +134,8 @@ while True:
 
         if nom_profile[0] == "Carre":
             window['col_Carre'].update(visible=True)
-"""
-    if event == 'Run':
-        print(values['In_IPN_d'], values['In_IPN_b'])
-"""
+
+
 window.close()
 
 
