@@ -28,14 +28,14 @@ col_image = [[sg.Text('----', key='-CHOIXPROFILE-')],
     #[sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
     [sg.Button('Quitter'), sg.Text(' ' * 40), sg.Button('Run')]]
 
-col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(size=(5,1))],
-    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(size=(5,1))],
-    [sg.Text('r_r, rayon en racine'), sg.Input(size=(5,1))],
-    [sg.Text('r_f, rayon de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('alpha, angle en degrés de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(size=(5,1))]
+col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(key='In_IPN_b', size=(5,1))],
+    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_IPN_t_f', size=(5,1))],
+    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_IPN_t_w', size=(5,1))],
+    [sg.Text('r_r, rayon en racine'), sg.Input(key='In_IPN_r_r', size=(5,1))],
+    [sg.Text('r_f, rayon de l\'aile'), sg.Input(key='In_IPN_r_f', size=(5,1))],
+    [sg.Text('alpha, angle en degrés de l\'aile'), sg.Input(key='In_IPN_alpha', size=(5,1))],
+    [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(key='In_IPN_n_r', size=(5,1))]
     ]
 
 col_IPE = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
@@ -96,7 +96,7 @@ while True:
     event, values = window.read()
     if event in ('Quitter', None):
         break
-    if event == "-PROFILE-":  # un profilé a été selectionné
+    if event == "-PROFILE-" or event == "Run":  # un profilé a été selectionné ou le caclul est lancé
         nom_profile = values["-PROFILE-"]
         window["-CHOIXPROFILE-"].update(nom_profile[0])
         adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
@@ -112,9 +112,13 @@ while True:
 
         if nom_profile[0] == "IPN":
             window['col_IPN'].update(visible=True)
+            (IPN_d, IPN_b, IPN_t_f, IPN_t_w, IPN_r_r, IPN_r_f, IPN_alpha, IPN_n_r) = values['In_IPN_d'], values['In_IPN_b'], values['In_IPN_t_w'], values['In_IPN_t_f'], values['In_IPN_r_r'], values['In_IPN_r_f'], values['In_IPN_alpha'], values['In_IPN_n_r']
+            print(IPN_d, IPN_b)
+            #print(values['In_IPN_d'], values['In_IPN_b'])
 
         if nom_profile[0] == "IPE":
             window['col_IPE'].update(visible=True)
+            
 
         if nom_profile[0] == "UPN":
             window['col_UPN'].update(visible=True)
@@ -127,7 +131,10 @@ while True:
 
         if nom_profile[0] == "Carre":
             window['col_Carre'].update(visible=True)
-
+"""
+    if event == 'Run':
+        print(values['In_IPN_d'], values['In_IPN_b'])
+"""
 window.close()
 
 
