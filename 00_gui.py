@@ -110,11 +110,14 @@ while True:
         window['col_Corniere'].update(visible=False)
         window['col_Carre'].update(visible=False)
 
+        torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'], 'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
+        param_gene #paramètres génériques : longueur, matériau, maillage
+
         if nom_profile[0] == "IPN":
             window['col_IPN'].update(visible=True)
             (IPN_d, IPN_b, IPN_t_f, IPN_t_w, IPN_r_r, IPN_r_f, IPN_alpha, IPN_n_r) = values['In_IPN_d'], values['In_IPN_b'], values['In_IPN_t_w'], values['In_IPN_t_f'], values['In_IPN_r_r'], values['In_IPN_r_f'], values['In_IPN_alpha'], values['In_IPN_n_r']
             print(IPN_d, IPN_b)
-            #print(values['In_IPN_d'], values['In_IPN_b'])
+            
 
         if nom_profile[0] == "IPE":
             window['col_IPE'].update(visible=True)
