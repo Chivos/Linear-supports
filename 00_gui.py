@@ -1,9 +1,10 @@
 import os
 import PySimpleGUI as sg
+import solver
 
 
 sg.theme('TanBlue')
-col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='listbox')],
+col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='-NIVEAU_RCCM-')],
     [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Carre'), size=(10, 6), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur:'), sg.Input(key='-LONGUEUR-', size=(10,1))],
     [sg.Text('Coefficient de longueur K:'), sg.Input(key='-KLONGUEUR-', size=(10,1))],
@@ -79,7 +80,7 @@ col_Carre = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(size=(5,1))]
     ]
 
-layout = [[sg.Column(col_parametres, element_justification='c'),
+layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.VSeperator(),
         sg.Column(col_image, element_justification='c'),
         sg.Column(col_IPN, element_justification='r', visible=False, key='col_IPN'),
@@ -96,13 +97,13 @@ while True:
     event, values = window.read()
     if event in ('Quitter', None):
         break
-    if event == "-PROFILE-" or event == "Run":  # un profilé a été selectionné ou le caclul est lancé
+    if event == "-PROFILE-":  # un profilé a été selectionné
         nom_profile = values["-PROFILE-"]
         window["-CHOIXPROFILE-"].update(nom_profile[0])
         adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
         window['-IMAGEPROFILE-'].update(adresse)
 
-        #Effacer les colonnes éventuellement affichées
+        #Effacer les colonnes éventuellement affichées lors d'une sélection
         window['col_IPE'].update(visible=False)
         window['col_IPN'].update(visible=False)
         window['col_UPN'].update(visible=False)
@@ -110,31 +111,47 @@ while True:
         window['col_Corniere'].update(visible=False)
         window['col_Carre'].update(visible=False)
 
-        torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'], 'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
-        param_gene = {'Maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-']} #paramètres génériques : longueur, matériau, maillage
-
+        #Afficher colonnes en fonction de la section
         if nom_profile[0] == "IPN":
             window['col_IPN'].update(visible=True)
-            (IPN_d, IPN_b, IPN_t_f, IPN_t_w, IPN_r_r, IPN_r_f, IPN_alpha, IPN_n_r) = values['In_IPN_d'], values['In_IPN_b'], values['In_IPN_t_w'], values['In_IPN_t_f'], values['In_IPN_r_r'], values['In_IPN_r_f'], values['In_IPN_alpha'], values['In_IPN_n_r']
-            print(IPN_d, IPN_b)
-            
-
         if nom_profile[0] == "IPE":
             window['col_IPE'].update(visible=True)
-            
-
         if nom_profile[0] == "UPN":
             window['col_UPN'].update(visible=True)
-
         if nom_profile[0] == "UPE":
             window['col_UPE'].update(visible=True)
-
         if nom_profile[0] == "Corniere":
             window['col_Corniere'].update(visible=True)
-
         if nom_profile[0] == "Carre":
             window['col_Carre'].update(visible=True)
 
+    if event == "Run":
+        torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
+            'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
+        for key, value in torseur.items():
+            try:
+                torseur[key]=float(value)
+            except:
+                pass
+
+        param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'], 'angle':values['-ANGLEROT-'],
+            'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-']} #paramètres génériques : longueur, matériau, maillage
+        for key, value in param_gene.items():
+            try:
+                param_gene[key]=float(value)
+            except:
+                pass
+
+        if nom_profile[0] == "IPN":
+            param_geom = {'IPN_d':values['In_IPN_d'], 'IPN_b':values['In_IPN_b'], 'IPN_t_f':values['In_IPN_t_f'],
+                'IPN_t_w':values['In_IPN_t_w'], 'IPN_r_r':values['In_IPN_r_r'], 'IPN_r_f':values['In_IPN_r_f'], 'IPN_alpha':values['In_IPN_alpha'], 'IPN_n_r':values['In_IPN_n_r']}
+            for key, value in param_geom.items(): 
+                try:
+                    param_geom[key]=float(value)
+                except: ##### le n_r de discretisation doit être un integer dans sectionproperties, voir pour ajouter un exception ici plutôt dans la réception
+                    pass
+
+            solver.calcul("IPN", param_geom, param_gene, torseur)
 
 window.close()
 
