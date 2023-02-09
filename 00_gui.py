@@ -132,39 +132,25 @@ while True:
     if event == "Calcul":
         torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
             'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
-        for key, value in torseur.items(): #Transformation string en float
-            try:
-                torseur[key]=float(value)
-            except:
-                pass
 
         param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'], 'angle':values['-ANGLEROT-'],
             'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-']} #paramètres génériques : longueur, matériau, maillage
-        for key, value in param_gene.items(): #Transformation string en float
-            try:
-                param_gene[key]=float(value)
-            except:
-                pass
 
         if nom_profile[0] == "IPN":
-            param_geom = {'IPN_d':values['In_IPN_d'], 'IPN_b':values['In_IPN_b'], 'IPN_t_f':values['In_IPN_t_f'],
-                'IPN_t_w':values['In_IPN_t_w'], 'IPN_r_r':values['In_IPN_r_r'], 'IPN_r_f':values['In_IPN_r_f'], 'IPN_alpha':values['In_IPN_alpha'], 'IPN_n_r':values['In_IPN_n_r']}
-            for key, value in param_geom.items():  #Transformation string en float
-                try:
-                    param_geom[key]=float(value)
-                except:
-                    pass
+            param_geom = {'IPN_d':values['In_IPN_d'], 'IPN_b':values['In_IPN_b'], 'IPN_t_f':values['In_IPN_t_f'], 'IPN_t_w':values['In_IPN_t_w'],
+                'IPN_r_r':values['In_IPN_r_r'], 'IPN_r_f':values['In_IPN_r_f'], 'IPN_alpha':values['In_IPN_alpha'], 'IPN_n_r':values['In_IPN_n_r']}
             solver.calcul("IPN", param_geom, param_gene, torseur)
 
         if nom_profile[0] == "IPE":
             param_geom = {'IPE_d':values['In_IPE_d'], 'IPE_b':values['In_IPE_b'], 'IPE_t_f':values['In_IPE_t_f'],
                 'IPE_t_w':values['In_IPE_t_w'], 'IPE_r':values['In_IPE_r'], 'IPE_n_r':values['In_IPE_n_r']}
-            for key, value in param_geom.items():  #Transformation string en float
-                try:
-                    param_geom[key]=float(value)
-                except:
-                    pass
             solver.calcul("IPE", param_geom, param_gene, torseur)
+
+
+        if nom_profile[0] == "UPN":
+            param_geom = {'UPN_d':values['In_UPN_d'], 'UPN_b':values['In_UPN_b'], 'UPN_t_f':values['In_UPN_t_f'], 'UPN_t_w':values['In_UPN_t_w'],
+                'UPN_r_r':values['In_UPN_r_r'], 'UPN_r_f':values['In_UPN_r_f'], 'UPN_alpha':values['In_UPN_alpha'], 'UPN_n_r':values['In_UPN_n_r']}
+            solver.calcul("UPN", param_geom, param_gene, torseur)
 
 
 window.close()

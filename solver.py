@@ -14,6 +14,23 @@ def calcul(profile, param_geom, param_gene, torseur):
 
         ###############################DONNEES D'ENTREE#######################################
         
+        ###Transformation string en float pour entrée dans sectionproperties
+        for key, value in param_geom.items():
+            try:
+                param_geom[key]=float(value)
+            except:
+                pass
+        for key, value in torseur.items():
+            try:
+                torseur[key]=float(value)
+            except:
+                pass
+        for key, value in param_gene.items():
+            try:
+                param_gene[key]=float(value)
+            except:
+                pass
+
         if profile == "IPN":
                 type_profile = "IH" #pour prise en compte limites de contraintes en flexion
                 geometry_0 = tapered_flange_i_section(d=param_geom['IPN_d'], b=param_geom['IPN_b'], t_f=param_geom['IPN_t_f'], t_w=param_geom['IPN_t_w'], r_r=param_geom['IPN_r_r'],
