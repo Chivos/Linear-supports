@@ -5,6 +5,7 @@ def calcul(profile, param_geom, param_gene, torseur):
         from sectionproperties.pre.library.steel_sections import i_section #HEA, HEB, HEC, IPE
         from sectionproperties.pre.library.steel_sections import tapered_flange_i_section #IPN
         from sectionproperties.pre.library.steel_sections import rectangular_hollow_section #Carré, rectangle
+        from sectionproperties.pre.library.steel_sections import angle_section #Cornière
         from sectionproperties.analysis.section import Section
         from texttable import Texttable
         from time import time
@@ -12,17 +13,32 @@ def calcul(profile, param_geom, param_gene, torseur):
         start = time()
 
         ###############################DONNEES D'ENTREE#######################################
-
-        #geometry_0 = i_section(d=200, b=200, t_f=15, t_w=9, r=18, n_r=25)
-                
+        
         if profile == "IPN":
-                type_profile = "IH"
+                type_profile = "IH" #pour prise en compte limites de contraintes en flexion
                 geometry_0 = tapered_flange_i_section(d=param_geom['IPN_d'], b=param_geom['IPN_b'], t_f=param_geom['IPN_t_f'], t_w=param_geom['IPN_t_w'], r_r=param_geom['IPN_r_r'],
                                 r_f=param_geom['IPN_r_f'], alpha=param_geom['IPN_alpha'], n_r=int(param_geom['IPN_n_r']))
         
-        #geometry_0 = channel_section(d=100, b=50, t_f=8.5, t_w=6, r=8.5, n_r=8)
-        #geometry_0 = tapered_flange_channel(d=100, b=50, t_f=8.5, t_w=6.0, r_r=8.5, r_f=4.5, alpha=4.574, n_r=8)
-        #geometry_0 = rectangular_hollow_section(d=100, b=100, t=5, r_out=5, n_r=10)
+        if profile == "UPE":
+                type_profile = "U"
+                geometry_0 = channel_section(d=100, b=50, t_f=8.5, t_w=6, r=8.5, n_r=8)
+        
+        if profile == "IPE": #concerne les H (HEA, HEB, HEC...)
+                type_profile ="IH"
+                geometry_0 = i_section(d=200, b=200, t_f=15, t_w=9, r=18, n_r=25)
+        
+        if profile == "UPN":
+                type_profile ="U"
+                geometry_0 = tapered_flange_channel(d=100, b=50, t_f=8.5, t_w=6.0, r_r=8.5, r_f=4.5, alpha=4.574, n_r=8)
+        
+        if profile == "Carre":
+                type_profile = "C"
+                geometry_0 = rectangular_hollow_section(d=100, b=100, t=5, r_out=5, n_r=10)
+
+        if profile == "Corniere":
+                type_profile = "L"
+                geometry_0 = angle_section(d=150, b=100, t=8, r_r=12, r_t=5, n_r=16)
+
 
         geometry = geometry_0.rotate_section(angle=param_gene['angle']) #sens trigonométrique
         geometry.create_mesh(mesh_sizes=[param_gene['maille']])
@@ -38,7 +54,6 @@ def calcul(profile, param_geom, param_gene, torseur):
         Su=param_gene['Su']
         E=param_gene['E']
 
-        #type_profile="U" #valeur IH ou U ou L ou C (carré) ; programmer pour prendre en compte limites de contraintes en flexion
         niveau_RCCM=param_gene['niveau_RCCM'] #niveau de contraintes, 0AB, C ou D
         K=param_gene['K'] #conditions aux extremités
         l=param_gene['L'] #lambda, longueur
