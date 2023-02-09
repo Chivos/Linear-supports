@@ -4,3 +4,8 @@ Calculating stresses in steel sections using sectionproperties, and check compli
 Code implemented : RCC-M / AISC Allowable Stress Design 9th (similar criterias)
 
 Stress limit for U sections in bending need to be checked
+
+Dependancies :
+- sectionproperties
+- texttable
+- PySimpleGUI
