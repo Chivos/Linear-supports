@@ -5,9 +5,9 @@ import solver
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='-NIVEAU_RCCM-')],
-    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Carre'), size=(10, 6), enable_events=True, key="-PROFILE-")],
+    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Rectangle'), size=(10, 6), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur:'), sg.Input(key='-LONGUEUR-', size=(10,1))],
-    [sg.Text('Coefficient de longueur K:'), sg.Input(key='-KLONGUEUR-', size=(10,1))],
+    [sg.Text('Coefficient de longueur K:'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
     [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', size=(10,1))],
                              [sg.Text('Fx'), sg.Input(0, key='-TORSEUR_FX-', size=(10,1))],
                              [sg.Text('Fy'), sg.Input(0, key='-TORSEUR_FY-', size=(10,1))],
@@ -27,7 +27,9 @@ col_image = [[sg.Text('----', key='-CHOIXPROFILE-')],
     [sg.Text('Taille du maillage'), sg.Input(10, key='-MESH_SIZE-', size=(3,1))],
     #[sg.Text('Choisir un fichier', size=(35, 1))],
     #[sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
-    [sg.Button('Quitter'), sg.Text(' ' * 40), sg.Button('Run')]]
+    [sg.Button('Quitter'), sg.Text(' ' * 40), sg.Button('Calcul')]]
+
+#####################COLONNES MASQUEES / AFFICHEES SELON LES PROFILES###############################
 
 col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_IPN_b', size=(5,1))],
@@ -36,49 +38,51 @@ col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('r_r, rayon en racine'), sg.Input(key='In_IPN_r_r', size=(5,1))],
     [sg.Text('r_f, rayon de l\'aile'), sg.Input(key='In_IPN_r_f', size=(5,1))],
     [sg.Text('alpha, angle en degrés de l\'aile'), sg.Input(key='In_IPN_alpha', size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(key='In_IPN_n_r', size=(5,1))]
+    [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_IPN_n_r', size=(5,1))]
     ]
 
-col_IPE = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(size=(5,1))],
-    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(size=(5,1))],
-    [sg.Text('r, rayon en racine'), sg.Input(size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(size=(5,1))]
+col_IPE = [[sg.Text('d, hauteur'), sg.Input(key='In_IPE_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(key='In_IPE_b', size=(5,1))],
+    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_IPE_t_f', size=(5,1))],
+    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_IPE_t_w', size=(5,1))],
+    [sg.Text('r, rayon en racine'), sg.Input(key='In_IPE_r', size=(5,1))],
+    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_IPE_n_r', size=(5,1))]
     ]
 
-col_UPN = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(size=(5,1))],
-    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(size=(5,1))],
-    [sg.Text('r_r, rayon en racine'), sg.Input(size=(5,1))],
-    [sg.Text('r_f, rayon de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('alpha, angle en degrés de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(size=(5,1))]
+col_UPN = [[sg.Text('d, hauteur'), sg.Input(key='In_UPN_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(key='In_UPN_b', size=(5,1))],
+    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_UPN_t_f', size=(5,1))],
+    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_UPN_t_w', size=(5,1))],
+    [sg.Text('r_r, rayon en racine'), sg.Input(key='In_UPN_r_r', size=(5,1))],
+    [sg.Text('r_f, rayon de l\'aile'), sg.Input(key='In_UPN_r_f', size=(5,1))],
+    [sg.Text('alpha, angle en degrés de l\'aile'), sg.Input(key='In_UPN_alpha', size=(5,1))],
+    [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_UPN_n_r', size=(5,1))]
     ]
 
-col_UPE = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(size=(5,1))],
-    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(size=(5,1))],
-    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(size=(5,1))],
-    [sg.Text('r, rayon en racine'), sg.Input(size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(size=(5,1))]
+col_UPE = [[sg.Text('d, hauteur'), sg.Input(key='In_UPE_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(key='In_UPE_b', size=(5,1))],
+    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_UPE_t_f', size=(5,1))],
+    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_UPE_t_w', size=(5,1))],
+    [sg.Text('r, rayon en racine'), sg.Input(key='In_UPE_r', size=(5,1))],
+    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_UPE_n_r', size=(5,1))]
     ]
 
-col_Corniere = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(size=(5,1))],
-    [sg.Text('t, épaisseur'), sg.Input(size=(5,1))],
-    [sg.Text('r_r, rayon en racine'), sg.Input(size=(5,1))],
-    [sg.Text('r_t, rayon en pied'), sg.Input(size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(size=(5,1))]
+col_Corniere = [[sg.Text('d, hauteur'), sg.Input(key='In_L_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(key='In_L_b', size=(5,1))],
+    [sg.Text('t, épaisseur'), sg.Input(key='In_L_t', size=(5,1))],
+    [sg.Text('r_r, rayon en racine'), sg.Input(key='In_L_r_r', size=(5,1))],
+    [sg.Text('r_t, rayon en pied'), sg.Input(key='In_L_r_t', size=(5,1))],
+    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_L_n_r', size=(5,1))]
     ]
 
-col_Carre = [[sg.Text('d, hauteur'), sg.Input(key='-HAUTEUR-', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(size=(5,1))],
-    [sg.Text('t, épaisseur'), sg.Input(size=(5,1))],
-    [sg.Text('r_out, rayon extérieur'), sg.Input(size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(size=(5,1))]
+col_Rectangle = [[sg.Text('d, hauteur'), sg.Input(key='In_REC_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(key='In_REC_b', size=(5,1))],
+    [sg.Text('t, épaisseur'), sg.Input(key='In_REC_t', size=(5,1))],
+    [sg.Text('r_out, rayon extérieur'), sg.Input(key='In_REC_r_out', size=(5,1))],
+    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_REC_n_r', size=(5,1))]
     ]
+
+#############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
 
 layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.VSeperator(),
@@ -88,7 +92,7 @@ layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.Column(col_UPN, element_justification='r', visible=False, key='col_UPN'),
         sg.Column(col_UPE, element_justification='r', visible=False, key='col_UPE'),
         sg.Column(col_Corniere, element_justification='r', visible=False, key='col_Corniere'),
-        sg.Column(col_Carre, element_justification='r', visible=False, key='col_Carre')
+        sg.Column(col_Rectangle, element_justification='r', visible=False, key='col_Rectangle')
         ]]
 
 window = sg.Window('Dépouillement supports linéaires RCCM ZVI', layout, default_element_size=(40, 1), grab_anywhere=False, resizable=True)
@@ -109,7 +113,7 @@ while True:
         window['col_UPN'].update(visible=False)
         window['col_UPE'].update(visible=False)
         window['col_Corniere'].update(visible=False)
-        window['col_Carre'].update(visible=False)
+        window['col_Rectangle'].update(visible=False)
 
         #Afficher colonnes en fonction de la section
         if nom_profile[0] == "IPN":
@@ -122,13 +126,13 @@ while True:
             window['col_UPE'].update(visible=True)
         if nom_profile[0] == "Corniere":
             window['col_Corniere'].update(visible=True)
-        if nom_profile[0] == "Carre":
-            window['col_Carre'].update(visible=True)
+        if nom_profile[0] == "Rectangle":
+            window['col_Rectangle'].update(visible=True)
 
-    if event == "Run":
+    if event == "Calcul":
         torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
             'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
-        for key, value in torseur.items():
+        for key, value in torseur.items(): #Transformation string en float
             try:
                 torseur[key]=float(value)
             except:
@@ -136,7 +140,7 @@ while True:
 
         param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'], 'angle':values['-ANGLEROT-'],
             'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-']} #paramètres génériques : longueur, matériau, maillage
-        for key, value in param_gene.items():
+        for key, value in param_gene.items(): #Transformation string en float
             try:
                 param_gene[key]=float(value)
             except:
@@ -145,15 +149,22 @@ while True:
         if nom_profile[0] == "IPN":
             param_geom = {'IPN_d':values['In_IPN_d'], 'IPN_b':values['In_IPN_b'], 'IPN_t_f':values['In_IPN_t_f'],
                 'IPN_t_w':values['In_IPN_t_w'], 'IPN_r_r':values['In_IPN_r_r'], 'IPN_r_f':values['In_IPN_r_f'], 'IPN_alpha':values['In_IPN_alpha'], 'IPN_n_r':values['In_IPN_n_r']}
-            for key, value in param_geom.items(): 
+            for key, value in param_geom.items():  #Transformation string en float
                 try:
                     param_geom[key]=float(value)
-                except: ##### le n_r de discretisation doit être un integer dans sectionproperties, voir pour ajouter un exception ici plutôt dans la réception
+                except:
                     pass
-
             solver.calcul("IPN", param_geom, param_gene, torseur)
 
+        if nom_profile[0] == "IPE":
+            param_geom = {'IPE_d':values['In_IPE_d'], 'IPE_b':values['In_IPE_b'], 'IPE_t_f':values['In_IPE_t_f'],
+                'IPE_t_w':values['In_IPE_t_w'], 'IPE_r':values['In_IPE_r'], 'IPE_n_r':values['In_IPE_n_r']}
+            for key, value in param_geom.items():  #Transformation string en float
+                try:
+                    param_geom[key]=float(value)
+                except:
+                    pass
+            solver.calcul("IPE", param_geom, param_gene, torseur)
+
+
 window.close()
-
-
-
