@@ -1,7 +1,7 @@
 # Linear-supports
 Calculating stresses in steel sections using sectionproperties, and check compliance with design code, with GUI
 
-Code implemented : RCC-M / AISC Allowable Stress Design 9th (similar criterias)
+Codes implemented : RCC-M Z VI / AISC Allowable Stress Design 9th / ASME III NF (without single angle appendix) (criterias are similar)
 
 Stress limit for U sections in bending need to be checked
 
