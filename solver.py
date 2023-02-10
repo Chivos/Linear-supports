@@ -9,7 +9,6 @@ def calcul(profile, param_geom, param_gene, torseur):
         from sectionproperties.analysis.section import Section
         from texttable import Texttable
         from time import time
-
         start = time()
 
         ###############################DONNEES D'ENTREE#######################################
@@ -35,18 +34,19 @@ def calcul(profile, param_geom, param_gene, torseur):
                 type_profile = "IH" #pour prise en compte limites de contraintes en flexion
                 geometry_0 = tapered_flange_i_section(d=param_geom['IPN_d'], b=param_geom['IPN_b'], t_f=param_geom['IPN_t_f'], t_w=param_geom['IPN_t_w'], r_r=param_geom['IPN_r_r'],
                                 r_f=param_geom['IPN_r_f'], alpha=param_geom['IPN_alpha'], n_r=int(param_geom['IPN_n_r']))
+
+        if profile == "IPE": #concerne les H (HEA, HEB, HEC...)
+                type_profile ="IH"
+                geometry_0 = i_section(d=200, b=200, t_f=15, t_w=9, r=18, n_r=25)
         
         if profile == "UPE":
                 type_profile = "U"
                 geometry_0 = channel_section(d=100, b=50, t_f=8.5, t_w=6, r=8.5, n_r=8)
         
-        if profile == "IPE": #concerne les H (HEA, HEB, HEC...)
-                type_profile ="IH"
-                geometry_0 = i_section(d=200, b=200, t_f=15, t_w=9, r=18, n_r=25)
-        
         if profile == "UPN":
                 type_profile ="U"
-                geometry_0 = tapered_flange_channel(d=100, b=50, t_f=8.5, t_w=6.0, r_r=8.5, r_f=4.5, alpha=4.574, n_r=8)
+                geometry_0 = tapered_flange_channel(d=param_geom['UPN_d'], b=param_geom['UPN_b'], t_f=param_geom['UPN_t_f'],
+                                t_w=param_geom['UPN_t_w'], r_r=param_geom['UPN_r_r'], r_f=param_geom['UPN_r_f'], alpha=param_geom['UPN_alpha'], n_r=int(param_geom['UPN_n_r']))
         
         if profile == "Carre":
                 type_profile = "C"
