@@ -35,13 +35,13 @@ def calcul(profile, param_geom, param_gene, torseur):
                 geometry_0 = tapered_flange_i_section(d=param_geom['IPN_d'], b=param_geom['IPN_b'], t_f=param_geom['IPN_t_f'], t_w=param_geom['IPN_t_w'], r_r=param_geom['IPN_r_r'],
                                 r_f=param_geom['IPN_r_f'], alpha=param_geom['IPN_alpha'], n_r=int(param_geom['IPN_n_r']))
 
-        if profile == "IPE": #concerne les H (HEA, HEB, HEC...)
+        if profile == "IPE": #concerne les IPE et les H (HEA, HEB, HEC...)
                 type_profile ="IH"
-                geometry_0 = i_section(d=200, b=200, t_f=15, t_w=9, r=18, n_r=25)
+                geometry_0 = i_section(d=param_geom['IPE_d'], b=param_geom['IPE_b'], t_f=param_geom['IPE_t_f'], t_w=param_geom['IPE_t_w'], r=param_geom['IPE_r'], n_r=int(param_geom['IPE_n_r']))
         
         if profile == "UPE":
                 type_profile = "U"
-                geometry_0 = channel_section(d=100, b=50, t_f=8.5, t_w=6, r=8.5, n_r=8)
+                geometry_0 = channel_section(d=param_geom['UPE_d'], b=param_geom['UPE_b'], t_f=param_geom['UPE_t_f'], t_w=param_geom['UPE_t_w'], r=param_geom['UPE_r'], n_r=int(param_geom['UPE_n_r']))
         
         if profile == "UPN":
                 type_profile ="U"

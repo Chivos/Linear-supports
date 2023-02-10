@@ -4,7 +4,7 @@ import solver
 
 
 sg.theme('TanBlue')
-col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), size=(10, 3), key='-NIVEAU_RCCM-')],
+col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
     [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Rectangle'), size=(10, 6), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur:'), sg.Input(key='-LONGUEUR-', size=(10,1))],
     [sg.Text('Coefficient de longueur K:'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
@@ -146,11 +146,15 @@ while True:
                 'IPE_t_w':values['In_IPE_t_w'], 'IPE_r':values['In_IPE_r'], 'IPE_n_r':values['In_IPE_n_r']}
             solver.calcul("IPE", param_geom, param_gene, torseur)
 
-
         if nom_profile[0] == "UPN":
             param_geom = {'UPN_d':values['In_UPN_d'], 'UPN_b':values['In_UPN_b'], 'UPN_t_f':values['In_UPN_t_f'], 'UPN_t_w':values['In_UPN_t_w'],
                 'UPN_r_r':values['In_UPN_r_r'], 'UPN_r_f':values['In_UPN_r_f'], 'UPN_alpha':values['In_UPN_alpha'], 'UPN_n_r':values['In_UPN_n_r']}
             solver.calcul("UPN", param_geom, param_gene, torseur)
+
+        if nom_profile[0] == "UPE":
+            param_geom = {'UPE_d':values['In_UPE_d'], 'UPE_b':values['In_UPE_b'], 'UPE_t_f':values['In_UPE_t_f'], 'UPE_t_w':values['In_UPE_t_w'],
+                'UPE_r':values['In_UPE_r'], 'UPE_n_r':values['In_UPE_n_r']}
+            solver.calcul("UPE", param_geom, param_gene, torseur)
 
 
 window.close()
