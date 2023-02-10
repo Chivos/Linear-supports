@@ -41,7 +41,12 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
                 Fby=Fbx
         elif type_profile == "R" :
                 print('pour un profilé rectangulaire')
-                Fbx=r * min(Sy*0.66, Su*0.66) #ZVI2215.2 Flexion
+                Fbx=r * min(Sy*0.66, Su*0.55) #ZVI2215.2 Flexion
+                Fby=Fbx
+
+        elif type_profile == "T" :
+                print('pour un tube')
+                Fbx=r * min(Sy*0.66, Su*0.55) #ZVI2215.2 Flexion
                 Fby=Fbx
                 
         elancement = K*l/r_g
