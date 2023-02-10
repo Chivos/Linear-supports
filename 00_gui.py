@@ -25,10 +25,10 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
     ]
     ]
 
-col_image = [[sg.Text('----', key='-CHOIXPROFILE-')],
+col_image = [
     [sg.Image(key='-IMAGEPROFILE-')],
     [sg.Text('Angle de rotation'), sg.Input(0, key='-ANGLEROT-', tooltip='Degrés, sens trigonométrique', size=(5,1))],
-    [sg.Text('Taille du maillage'), sg.Input(10, key='-MESH_SIZE-', size=(3,1))],
+    [sg.Text('Taille du maillage'), sg.Input(10, key='-MESH_SIZE-', size=(5,1))],
     #[sg.Text('Choisir un fichier', size=(35, 1))],
     #[sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
     ]
@@ -98,7 +98,7 @@ lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer paramètres de section', key='-PRIN
 
 layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.VSeperator(),
-        sg.Column(col_image, element_justification='c'),
+        sg.Column(col_image, element_justification='r'),
         sg.Column(col_IPN, element_justification='r', visible=False, key='col_IPN'),
         sg.Column(col_IPE, element_justification='r', visible=False, key='col_IPE'),
         sg.Column(col_UPN, element_justification='r', visible=False, key='col_UPN'),
@@ -117,7 +117,6 @@ while True:
         break
     if event == "-PROFILE-":  # un profilé a été selectionné
         nom_profile = values["-PROFILE-"]
-        window["-CHOIXPROFILE-"].update(nom_profile[0])
         adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
         window['-IMAGEPROFILE-'].update(adresse)
 
@@ -151,7 +150,7 @@ while True:
             'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
 
         param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'], 'angle':values['-ANGLEROT-'],
-            'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-'], 'impr_res':values['-PRINT_PARAM-']}
+            'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-'], 'impr_res':values['-PRINT_PARAM-'], 'trac_res':values['-DRAW_RESULTS-']}
 
         if nom_profile[0] == "IPN":
             param_geom = {'IPN_d':values['In_IPN_d'], 'IPN_b':values['In_IPN_b'], 'IPN_t_f':values['In_IPN_t_f'], 'IPN_t_w':values['In_IPN_t_w'],
