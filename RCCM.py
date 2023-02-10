@@ -39,8 +39,8 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
                 print('pour un profilé en L')
                 Fbx=r * min(Sy*0.60, Su*0.50) #ZVI2215.6 Flexion
                 Fby=Fbx
-        elif type_profile == "C" :
-                print('pour un profilé carré')
+        elif type_profile == "R" :
+                print('pour un profilé rectangulaire')
                 Fbx=r * min(Sy*0.66, Su*0.66) #ZVI2215.2 Flexion
                 Fby=Fbx
                 

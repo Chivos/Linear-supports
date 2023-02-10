@@ -160,5 +160,8 @@ while True:
                 'UPE_r':values['In_UPE_r'], 'UPE_n_r':values['In_UPE_n_r']}
             solver.calcul("UPE", param_geom, param_gene, torseur)
 
+        if nom_profile[0] == "Rectangle":
+            param_geom = {'REC_d':values['In_REC_d'], 'REC_b':values['In_REC_b'], 'REC_t':values['In_REC_t'], 'REC_r_out':values['In_REC_r_out'], 'REC_n_r':values['In_REC_n_r']}
+            solver.calcul("Rectangle", param_geom, param_gene, torseur)
 
 window.close()

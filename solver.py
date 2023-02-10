@@ -48,9 +48,9 @@ def calcul(profile, param_geom, param_gene, torseur):
                 geometry_0 = tapered_flange_channel(d=param_geom['UPN_d'], b=param_geom['UPN_b'], t_f=param_geom['UPN_t_f'],
                                 t_w=param_geom['UPN_t_w'], r_r=param_geom['UPN_r_r'], r_f=param_geom['UPN_r_f'], alpha=param_geom['UPN_alpha'], n_r=int(param_geom['UPN_n_r']))
         
-        if profile == "Carre":
-                type_profile = "C"
-                geometry_0 = rectangular_hollow_section(d=100, b=100, t=5, r_out=5, n_r=10)
+        if profile == "Rectangle":
+                type_profile = "R" ##Corriger pour passer de C à R pour être cohérent
+                geometry_0 = rectangular_hollow_section(d=param_geom['REC_d'], b=param_geom['REC_b'], t=param_geom['REC_t'], r_out=param_geom['REC_r_out'], n_r=int(param_geom['REC_n_r']))
 
         if profile == "Corniere":
                 type_profile = "L"
