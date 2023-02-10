@@ -71,12 +71,12 @@ col_UPE = [[sg.Text('d, hauteur'), sg.Input(key='In_UPE_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_UPE_n_r', size=(5,1))]
     ]
 
-col_Corniere = [[sg.Text('d, hauteur'), sg.Input(key='In_L_d', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(key='In_L_b', size=(5,1))],
-    [sg.Text('t, épaisseur'), sg.Input(key='In_L_t', size=(5,1))],
-    [sg.Text('r_r, rayon en racine'), sg.Input(key='In_L_r_r', size=(5,1))],
-    [sg.Text('r_t, rayon en pied'), sg.Input(key='In_L_r_t', size=(5,1))],
-    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_L_n_r', size=(5,1))]
+col_Corniere = [[sg.Text('d, hauteur'), sg.Input(key='In_COR_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(key='In_COR_b', size=(5,1))],
+    [sg.Text('t, épaisseur'), sg.Input(key='In_COR_t', size=(5,1))],
+    [sg.Text('r_r, rayon en racine'), sg.Input(key='In_COR_r_r', size=(5,1))],
+    [sg.Text('r_t, rayon en pied'), sg.Input(key='In_COR_r_t', size=(5,1))],
+    [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_COR_n_r', size=(5,1))]
     ]
 
 col_Rectangle = [[sg.Text('d, hauteur'), sg.Input(key='In_REC_d', size=(5,1))],
@@ -163,5 +163,10 @@ while True:
         if nom_profile[0] == "Rectangle":
             param_geom = {'REC_d':values['In_REC_d'], 'REC_b':values['In_REC_b'], 'REC_t':values['In_REC_t'], 'REC_r_out':values['In_REC_r_out'], 'REC_n_r':values['In_REC_n_r']}
             solver.calcul("Rectangle", param_geom, param_gene, torseur)
+
+        if nom_profile[0] == "Corniere":
+            param_geom = {'COR_d':values['In_COR_d'], 'COR_b':values['In_COR_b'], 'COR_t':values['In_COR_t'], 'COR_r_r':values['In_COR_r_r'],
+                'COR_r_t':values['In_COR_r_t'], 'COR_n_r':values['In_COR_n_r']}
+            solver.calcul("Corniere", param_geom, param_gene, torseur)
 
 window.close()

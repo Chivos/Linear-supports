@@ -54,7 +54,7 @@ def calcul(profile, param_geom, param_gene, torseur):
 
         if profile == "Corniere":
                 type_profile = "L"
-                geometry_0 = angle_section(d=150, b=100, t=8, r_r=12, r_t=5, n_r=16)
+                geometry_0 = angle_section(d=param_geom['COR_d'], b=param_geom['COR_b'], t=param_geom['COR_t'], r_r=param_geom['COR_r_r'], r_t=param_geom['COR_r_t'], n_r=int(param_geom['COR_n_r']))
 
 
         geometry = geometry_0.rotate_section(angle=param_gene['angle']) #sens trigonométrique
