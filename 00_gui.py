@@ -31,9 +31,9 @@ col_image = [[sg.Text('----', key='-CHOIXPROFILE-')],
     [sg.Text('Taille du maillage'), sg.Input(10, key='-MESH_SIZE-', size=(3,1))],
     #[sg.Text('Choisir un fichier', size=(35, 1))],
     #[sg.InputText('Default Folder', key='folder'), sg.FolderBrowse()],
-    [sg.Button('Quitter'), sg.Text(' ' * 40), sg.Button('Calcul')]]
+    ]
 
-#####################COLONNES MASQUEES / AFFICHEES SELON LES PROFILES###############################
+########################COLONNES MASQUEES / AFFICHEES SELON LES PROFILES###############################
 
 col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_IPN_b', size=(5,1))],
@@ -93,6 +93,9 @@ col_Tube = [[sg.Text('d, diamètre extérieur'), sg.Input(key='In_TUB_d', size=(
 
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
 
+lig_Cal = [[sg.Push(), sg.Checkbox("Imprimer paramètres de section"), sg.Checkbox("Tracer résultats")],
+    [sg.Push(), sg.Button('Quitter'), sg.Button('Calcul')]]
+
 layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.VSeperator(),
         sg.Column(col_image, element_justification='c'),
@@ -103,7 +106,8 @@ layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.Column(col_Corniere, element_justification='r', visible=False, key='col_Corniere'),
         sg.Column(col_Rectangle, element_justification='r', visible=False, key='col_Rectangle'),
         sg.Column(col_Tube, element_justification='r', visible=False, key='col_Tube')
-        ]]
+        ],
+        lig_Cal]
 
 window = sg.Window('Dépouillement supports linéaires RCCM ZVI', layout, default_element_size=(40, 1), grab_anywhere=False, resizable=True)
 
