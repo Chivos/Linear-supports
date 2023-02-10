@@ -14,11 +14,15 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
                              [sg.Text('Mx'), sg.Input(0, key='-TORSEUR_MX-', size=(10,1))],
                              [sg.Text('My'), sg.Input(0, key='-TORSEUR_MY-', size=(10,1))],
                              [sg.Text('Mz'), sg.Input(0, key='-TORSEUR_MZ-', size=(10,1))]
-                             ])],
+                             ],
+                element_justification='r')
+    ],
     [sg.Frame('Matériau:', [[sg.Text('Sy'), sg.Input(235, key='-SY-', size=(5,1))],
                              [sg.Text('Su'), sg.Input(360, key='-SU-', size=(5,1))],
                              [sg.Text('E'), sg.Input(210000, key='-MODULE-', size=(8,1))],
-                             ])]
+                             ],
+                element_justification='r')
+    ]
     ]
 
 col_image = [[sg.Text('----', key='-CHOIXPROFILE-')],
