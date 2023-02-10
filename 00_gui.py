@@ -93,7 +93,7 @@ col_Tube = [[sg.Text('d, diamètre extérieur'), sg.Input(key='In_TUB_d', size=(
 
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
 
-lig_Cal = [[sg.Push(), sg.Checkbox("Imprimer paramètres de section"), sg.Checkbox("Tracer résultats")],
+lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer paramètres de section', key='-PRINT_PARAM-'), sg.Checkbox('Tracer résultats', key='-DRAW_RESULTS-')],
     [sg.Push(), sg.Button('Quitter'), sg.Button('Calcul')]]
 
 layout = [[sg.Column(col_parametres, element_justification='r'),
@@ -151,7 +151,7 @@ while True:
             'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
 
         param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'], 'angle':values['-ANGLEROT-'],
-            'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-']} #paramètres génériques : longueur, matériau, maillage
+            'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-'], 'impr_res':values['-PRINT_PARAM-']}
 
         if nom_profile[0] == "IPN":
             param_geom = {'IPN_d':values['In_IPN_d'], 'IPN_b':values['In_IPN_b'], 'IPN_t_f':values['In_IPN_t_f'], 'IPN_t_w':values['In_IPN_t_w'],

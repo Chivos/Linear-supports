@@ -87,12 +87,15 @@ def calcul(profile, param_geom, param_gene, torseur):
         section.calculate_geometric_properties()
         section.calculate_warping_properties()
         section.calculate_plastic_properties()
-        #section.display_results() #affichage proprietés de section
-
+       
         stress_post = section.calculate_stress(N=N, Vx=Vx, Vy=Vy, Mxx=Mxx, Myy=Myy, Mzz=Mzz)
 
         r_g = min(section.get_rc()) #rayon de giration pour calcul élancement
         (ixx_c, iyy_c, ixy_c) = section.get_ic() #pour déterminer axe fort et axe faible et choix de la limite en flexion pour les poutres en I et H
+
+        #####################################IMPRESSION RESULTATS PROPRIETES de SECTION################################################
+        if bool(param_gene['impr_res']) is True:
+                section.display_results()
 
         #####################################AFFICHAGE CONTRAINTES################################################
         #stress_post.plot_stress_n_zz(pause=False) #Traction liée à l'effort normal
