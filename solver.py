@@ -10,6 +10,7 @@ def calcul(profile, param_geom, param_gene, torseur):
         from sectionproperties.analysis.section import Section
         from texttable import Texttable
         from time import time
+        import matplotlib.pyplot as plt
         start = time()
 
         ###############################DONNEES D'ENTREE#######################################
@@ -93,9 +94,25 @@ def calcul(profile, param_geom, param_gene, torseur):
         r_g = min(section.get_rc()) #rayon de giration pour calcul élancement
         (ixx_c, iyy_c, ixy_c) = section.get_ic() #pour déterminer axe fort et axe faible et choix de la limite en flexion pour les poutres en I et H
 
-        #####################################IMPRESSION RESULTATS PROPRIETES de SECTION################################################
+        #####################################IMPRESSION RESULTATS PROPRIETES DE SECTION################################################
         if bool(param_gene['impr_res']) is True:
                 section.display_results()
+
+        #####################################AFFICHAGE CONTRAINTES################################################
+        if bool(param_gene['trac_res']) is True:
+                ax = geometry.plot_geometry(nrows=3, ncols=3, figsize=(12, 7), render=False)
+                #ax = section.plot_centroids(nrows=2, ncols=3, figsize=(12, 7), render=False)
+                fig = ax.get_figure()
+                stress_post.plot_stress_n_zz(ax=fig.axes[1], title="Traction liée à l'effort normal")
+                stress_post.plot_stress_mxx_zz(ax=fig.axes[2], title="Flexion liée au moment suivant X")
+                stress_post.plot_stress_myy_zz(ax=fig.axes[3], title="Flexion liée au moment suivant Y")
+                stress_post.plot_stress_vx_zxy(ax=fig.axes[4], title="Cisaillement lié à l'effort suivant X")
+                stress_post.plot_stress_vy_zxy(ax=fig.axes[5], title="Cisaillement lié à l'effort suivant Y")
+                stress_post.plot_stress_mzz_zxy(ax=fig.axes[6], title="Torsion liée au moment suivant Z")
+                stress_post.plot_stress_zz(ax=fig.axes[7], title="Traction tous chargements")
+                stress_post.plot_stress_zxy(ax=fig.axes[8], title="Cisaillement tous chargements")
+                plt.show()
+
 
         #####################################AFFICHAGE CONTRAINTES################################################
         #stress_post.plot_stress_n_zz(pause=False) #Traction liée à l'effort normal
@@ -148,7 +165,7 @@ def calcul(profile, param_geom, param_gene, torseur):
         if abs(fa/Fa) <= 0.15:
                 table.add_row(["(22)", "", "", "", abs( (fa/Fa if fa<0 else 0) + fbx_min/Fbx + fby_min/Fby), "Compression et flexion ZVI2216.1"]) #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
         else :
-                table.add_row(["", "", "", "", "", "NON PROGRAMME EQ (20) ET (21) POUR COMPRESSION"])
+                table.add_row(["", "", "", "", "", "NON PROGRAMME EQ (20) ET (21) POUR COMPRESSION"]) ###S'affiche avec un torseur de traction pure
 
         #Combinaison traction et flexion
         table.add_row(["(21)", "", "", "", abs( (fa/Fa if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby), "Traction et flexion ZVI2216.2"])
