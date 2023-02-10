@@ -5,7 +5,7 @@ import solver
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
-    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Rectangle'), size=(10, 6), enable_events=True, key="-PROFILE-")],
+    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Rectangle', 'Tube'), size=(10, 7), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur'), sg.Input(key='-LONGUEUR-', tooltip='mm', size=(10,1))],
     [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
     [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', tooltip='N', size=(10,1))],
@@ -86,6 +86,11 @@ col_Rectangle = [[sg.Text('d, hauteur'), sg.Input(key='In_REC_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_REC_n_r', size=(5,1))]
     ]
 
+col_Tube = [[sg.Text('d, diamètre extérieur'), sg.Input(key='In_TUB_d', size=(5,1))],
+    [sg.Text('t, épaisseur'), sg.Input(key='In_TUB_t', size=(5,1))],
+    [sg.Text('n, nombre de points de discrétisation des cercles'), sg.Input(key='In_TUB_n', size=(5,1))]
+    ]
+
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
 
 layout = [[sg.Column(col_parametres, element_justification='r'),
@@ -96,7 +101,8 @@ layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.Column(col_UPN, element_justification='r', visible=False, key='col_UPN'),
         sg.Column(col_UPE, element_justification='r', visible=False, key='col_UPE'),
         sg.Column(col_Corniere, element_justification='r', visible=False, key='col_Corniere'),
-        sg.Column(col_Rectangle, element_justification='r', visible=False, key='col_Rectangle')
+        sg.Column(col_Rectangle, element_justification='r', visible=False, key='col_Rectangle'),
+        sg.Column(col_Tube, element_justification='r', visible=False, key='col_Tube')
         ]]
 
 window = sg.Window('Dépouillement supports linéaires RCCM ZVI', layout, default_element_size=(40, 1), grab_anywhere=False, resizable=True)
@@ -118,6 +124,7 @@ while True:
         window['col_UPE'].update(visible=False)
         window['col_Corniere'].update(visible=False)
         window['col_Rectangle'].update(visible=False)
+        window['col_Tube'].update(visible=False)
 
         #Afficher colonnes en fonction de la section
         if nom_profile[0] == "IPN":
@@ -132,6 +139,8 @@ while True:
             window['col_Corniere'].update(visible=True)
         if nom_profile[0] == "Rectangle":
             window['col_Rectangle'].update(visible=True)
+        if nom_profile[0] == "Tube":
+            window['col_Tube'].update(visible=True)
 
     if event == "Calcul":
         torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
@@ -168,5 +177,9 @@ while True:
             param_geom = {'COR_d':values['In_COR_d'], 'COR_b':values['In_COR_b'], 'COR_t':values['In_COR_t'], 'COR_r_r':values['In_COR_r_r'],
                 'COR_r_t':values['In_COR_r_t'], 'COR_n_r':values['In_COR_n_r']}
             solver.calcul("Corniere", param_geom, param_gene, torseur)
+
+        if nom_profile[0] == "Tube":
+            param_geom = {'TUB_d':values['In_TUB_d'], 'TUB_t':values['In_TUB_t'], 'TUB_n':values['In_TUB_n']}
+            solver.calcul("Tube", param_geom, param_gene, torseur)
 
 window.close()
