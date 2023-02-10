@@ -6,6 +6,7 @@ def calcul(profile, param_geom, param_gene, torseur):
         from sectionproperties.pre.library.steel_sections import tapered_flange_i_section #IPN
         from sectionproperties.pre.library.steel_sections import rectangular_hollow_section #Carré, rectangle
         from sectionproperties.pre.library.steel_sections import angle_section #Cornière
+        from sectionproperties.pre.library.steel_sections import circular_hollow_section #Tube
         from sectionproperties.analysis.section import Section
         from texttable import Texttable
         from time import time
@@ -49,13 +50,16 @@ def calcul(profile, param_geom, param_gene, torseur):
                                 t_w=param_geom['UPN_t_w'], r_r=param_geom['UPN_r_r'], r_f=param_geom['UPN_r_f'], alpha=param_geom['UPN_alpha'], n_r=int(param_geom['UPN_n_r']))
         
         if profile == "Rectangle":
-                type_profile = "R" ##Corriger pour passer de C à R pour être cohérent
+                type_profile = "R"
                 geometry_0 = rectangular_hollow_section(d=param_geom['REC_d'], b=param_geom['REC_b'], t=param_geom['REC_t'], r_out=param_geom['REC_r_out'], n_r=int(param_geom['REC_n_r']))
 
         if profile == "Corniere":
                 type_profile = "L"
                 geometry_0 = angle_section(d=param_geom['COR_d'], b=param_geom['COR_b'], t=param_geom['COR_t'], r_r=param_geom['COR_r_r'], r_t=param_geom['COR_r_t'], n_r=int(param_geom['COR_n_r']))
 
+        if profile == "Tube":
+                type_profile = "T"
+                geometry_0 = circular_hollow_section(d=param_geom['TUB_d'], t=param_geom['TUB_t'], n=int(param_geom['TUB_n']))
 
         geometry = geometry_0.rotate_section(angle=param_gene['angle']) #sens trigonométrique
         geometry.create_mesh(mesh_sizes=[param_gene['maille']])
