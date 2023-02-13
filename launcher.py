@@ -23,12 +23,14 @@ def charger_profile(adresse):
         wb.close()
         return(dic_dim)
     except:
-        print('Pas de fichier liste à charger')
+        print('Pas de fichier liste à charger à l\'adresse', adresse)
 
 
 
-adr_list_COR = os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx"
-adr_list_IPE = os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx"
+#Chargement des proprietes de charge profilé
+dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")
+dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx")
+dic_dim_IPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPN.xlsx")
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
@@ -62,7 +64,8 @@ col_image = [
 
 ########################COLONNES MASQUEES / AFFICHEES SELON LES PROFILES###############################
 
-col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
+col_IPN = [[sg.Combo(values=list(dic_dim_IPN), readonly=True, k='-LISTE_IPN-', size=(20,1), enable_events=True)],
+    [sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_IPN_b', size=(5,1))],
     [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_IPN_t_f', size=(5,1))],
     [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_IPN_t_w', size=(5,1))],
@@ -72,7 +75,7 @@ col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_IPN_n_r', size=(5,1))]
     ]
 
-col_IPE = [[sg.Combo(values=list(charger_profile(adr_list_IPE)), readonly=True, k='-LISTE_IPE-', size=(20,1), enable_events=True)],
+col_IPE = [[sg.Combo(values=list(dic_dim_IPE), readonly=True, k='-LISTE_IPE-', size=(20,1), enable_events=True)],
     [sg.Text('d, hauteur'), sg.Input(key='In_IPE_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_IPE_b', size=(5,1))],
     [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_IPE_t_f', size=(5,1))],
@@ -99,7 +102,7 @@ col_UPE = [[sg.Text('d, hauteur'), sg.Input(80, key='In_UPE_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_UPE_n_r', size=(5,1))]
     ]
 
-col_Corniere = [[sg.Combo(values=list(charger_profile(adr_list_COR)), readonly=True, k='-LISTE_COR-', size=(20,1), enable_events=True)],
+col_Corniere = [[sg.Combo(values=list(dic_dim_COR), readonly=True, k='-LISTE_COR-', size=(20,1), enable_events=True)],
     [sg.Text('d, hauteur'), sg.Input(key='In_COR_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_COR_b', size=(5,1))],
     [sg.Text('t, épaisseur'), sg.Input(key='In_COR_t', size=(5,1))],
@@ -108,8 +111,7 @@ col_Corniere = [[sg.Combo(values=list(charger_profile(adr_list_COR)), readonly=T
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_COR_n_r', size=(5,1))]
     ]
 
-col_Rectangle = [[sg.Combo(values=(''), readonly=True, k='-LISTE_REC-', size=(20,1))],
-    [sg.Text('d, hauteur'), sg.Input(key='In_REC_d', size=(5,1))],
+col_Rectangle = [[sg.Text('d, hauteur'), sg.Input(key='In_REC_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_REC_b', size=(5,1))],
     [sg.Text('t, épaisseur'), sg.Input(key='In_REC_t', size=(5,1))],
     [sg.Text('r_out, rayon extérieur'), sg.Input(key='In_REC_r_out', size=(5,1))],
@@ -175,22 +177,28 @@ while True:
         if nom_profile[0] == "Tube":
             window['col_Tube'].update(visible=True)
 
+    if event == "-LISTE_IPN-":
+        window['In_IPN_d'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][0])
+        window['In_IPN_b'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][1])
+        window['In_IPN_t_f'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][2])
+        window['In_IPN_t_w'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][3])
+        window['In_IPN_r_r'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][4])
+        window['In_IPN_r_f'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][5])
+        window['In_IPN_alpha'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][6])
 
     if event == "-LISTE_IPE-":
-        profile_courant = charger_profile(adr_list_IPE)
-        window['In_IPE_d'].update(value=profile_courant[values['-LISTE_IPE-']][0])
-        window['In_IPE_b'].update(value=profile_courant[values['-LISTE_IPE-']][1])
-        window['In_IPE_t_f'].update(value=profile_courant[values['-LISTE_IPE-']][2])
-        window['In_IPE_t_w'].update(value=profile_courant[values['-LISTE_IPE-']][3])
-        window['In_IPE_r'].update(value=profile_courant[values['-LISTE_IPE-']][4])
+        window['In_IPE_d'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][0])
+        window['In_IPE_b'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][1])
+        window['In_IPE_t_f'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][2])
+        window['In_IPE_t_w'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][3])
+        window['In_IPE_r'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][4])
 
     if event == "-LISTE_COR-":
-        profile_courant = charger_profile(adr_list_COR)
-        window['In_COR_d'].update(value=profile_courant[values['-LISTE_COR-']][0])
-        window['In_COR_b'].update(value=profile_courant[values['-LISTE_COR-']][1])
-        window['In_COR_t'].update(value=profile_courant[values['-LISTE_COR-']][2])
-        window['In_COR_r_r'].update(value=profile_courant[values['-LISTE_COR-']][3])
-        window['In_COR_r_t'].update(value=profile_courant[values['-LISTE_COR-']][4])
+        window['In_COR_d'].update(value=dic_dim_COR[values['-LISTE_COR-']][0])
+        window['In_COR_b'].update(value=dic_dim_COR[values['-LISTE_COR-']][1])
+        window['In_COR_t'].update(value=dic_dim_COR[values['-LISTE_COR-']][2])
+        window['In_COR_r_r'].update(value=dic_dim_COR[values['-LISTE_COR-']][3])
+        window['In_COR_r_t'].update(value=dic_dim_COR[values['-LISTE_COR-']][4])
 
 
 
