@@ -5,18 +5,25 @@ from openpyxl import load_workbook
 from scripts import solver
 
 
-def charger_liste(adresse):
+def charger_profile(adresse):
     try:
         wb = load_workbook(adresse, read_only=True)
         sheet = wb.worksheets[0]
         row_count = sheet.max_row #Nombre de lignes dans le fichier des dimensions
         column_count = sheet.max_column #Nombre de colonnes
-        liste_dim = []
+        dic_dim = {}
 
         for i in range(row_count-1): #retrancher 1 pour ligne d'en tete du tableau
-            liste_dim.append(sheet.cell(row=2+i, column=1).value) #ajout dimension cornière dans liste
+            new_key = (sheet.cell(row=2+i, column=1).value) #ajout dimension cornière dans liste
+            dic_dim[new_key] = []
+
+            for j in range(column_count-1):
+                #dic_dim[new_key].append(j)
+                dic_dim[new_key].append(sheet.cell(row=2+i, column=j+1).value)
+
         wb.close()
-        return(liste_dim)
+        print(dic_dim)
+        return(dic_dim)
     except:
         print('Pas de fichier liste à charger')
 
@@ -64,7 +71,7 @@ col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_IPN_n_r', size=(5,1))]
     ]
 
-col_IPE = [[sg.Combo(values=((charger_liste(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx"))), readonly=True, k='-LISTE_IPE-', size=(20,1))],
+col_IPE = [[sg.Combo(values=list(charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx")), readonly=True, k='-LISTE_IPE-', size=(20,1))],
     [sg.Text('d, hauteur'), sg.Input(key='In_IPE_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_IPE_b', size=(5,1))],
     [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_IPE_t_f', size=(5,1))],
@@ -91,7 +98,7 @@ col_UPE = [[sg.Text('d, hauteur'), sg.Input(80, key='In_UPE_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_UPE_n_r', size=(5,1))]
     ]
 
-col_Corniere = [[sg.Combo(values=(charger_liste(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")), readonly=True, k='-LISTE_COR-', size=(20,1))],
+col_Corniere = [[sg.Combo(values=list(charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")), readonly=True, k='-LISTE_COR-', size=(20,1))],
     [sg.Text('d, hauteur'), sg.Input(key='In_COR_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_COR_b', size=(5,1))],
     [sg.Text('t, épaisseur'), sg.Input(key='In_COR_t', size=(5,1))],
