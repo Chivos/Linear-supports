@@ -1,11 +1,30 @@
 import os
 import PySimpleGUI as sg
+from openpyxl import Workbook
+from openpyxl import load_workbook
 from scripts import solver
+
+
+def charger_liste(adresse):
+    try:
+        wb = load_workbook(adresse, read_only=True)
+        sheet = wb.worksheets[0]
+        row_count = sheet.max_row #Nombre de lignes dans le fichier des dimensions
+        column_count = sheet.max_column #Nombre de colonnes
+        liste_dim = []
+
+        for i in range(row_count-1): #retrancher 1 pour ligne d'en tete du tableau
+            liste_dim.append(sheet.cell(row=2+i, column=1).value) #ajout dimension cornière dans liste
+        wb.close()
+        return(liste_dim)
+    except:
+        print('Pas de fichier liste à charger')
+
 
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
-    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Rectangle', 'Tube'), size=(10, 7), enable_events=True, key="-PROFILE-")],
+    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Rectangle', 'Tube'), default_values='UPE', size=(10, 7), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur'), sg.Input(key='-LONGUEUR-', tooltip='mm', size=(10,1))],
     [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
     [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', tooltip='N', size=(10,1))],
@@ -45,7 +64,8 @@ col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_IPN_n_r', size=(5,1))]
     ]
 
-col_IPE = [[sg.Text('d, hauteur'), sg.Input(key='In_IPE_d', size=(5,1))],
+col_IPE = [[sg.Combo(values=((charger_liste(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx"))), readonly=True, k='-LISTE_IPE-', size=(20,1))],
+    [sg.Text('d, hauteur'), sg.Input(key='In_IPE_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_IPE_b', size=(5,1))],
     [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_IPE_t_f', size=(5,1))],
     [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_IPE_t_w', size=(5,1))],
@@ -63,15 +83,16 @@ col_UPN = [[sg.Text('d, hauteur'), sg.Input(key='In_UPN_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_UPN_n_r', size=(5,1))]
     ]
 
-col_UPE = [[sg.Text('d, hauteur'), sg.Input(key='In_UPE_d', size=(5,1))],
-    [sg.Text('b, largeur'), sg.Input(key='In_UPE_b', size=(5,1))],
-    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_UPE_t_f', size=(5,1))],
-    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_UPE_t_w', size=(5,1))],
-    [sg.Text('r, rayon en racine'), sg.Input(key='In_UPE_r', size=(5,1))],
+col_UPE = [[sg.Text('d, hauteur'), sg.Input(80, key='In_UPE_d', size=(5,1))],
+    [sg.Text('b, largeur'), sg.Input(40, key='In_UPE_b', size=(5,1))],
+    [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(5, key='In_UPE_t_f', size=(5,1))],
+    [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(5, key='In_UPE_t_w', size=(5,1))],
+    [sg.Text('r, rayon en racine'), sg.Input(5, key='In_UPE_r', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_UPE_n_r', size=(5,1))]
     ]
 
-col_Corniere = [[sg.Text('d, hauteur'), sg.Input(key='In_COR_d', size=(5,1))],
+col_Corniere = [[sg.Combo(values=(charger_liste(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")), readonly=True, k='-LISTE_COR-', size=(20,1))],
+    [sg.Text('d, hauteur'), sg.Input(key='In_COR_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_COR_b', size=(5,1))],
     [sg.Text('t, épaisseur'), sg.Input(key='In_COR_t', size=(5,1))],
     [sg.Text('r_r, rayon en racine'), sg.Input(key='In_COR_r_r', size=(5,1))],
@@ -79,7 +100,8 @@ col_Corniere = [[sg.Text('d, hauteur'), sg.Input(key='In_COR_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_COR_n_r', size=(5,1))]
     ]
 
-col_Rectangle = [[sg.Text('d, hauteur'), sg.Input(key='In_REC_d', size=(5,1))],
+col_Rectangle = [[sg.Combo(values=(''), readonly=True, k='-LISTE_REC-', size=(20,1))],
+    [sg.Text('d, hauteur'), sg.Input(key='In_REC_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_REC_b', size=(5,1))],
     [sg.Text('t, épaisseur'), sg.Input(key='In_REC_t', size=(5,1))],
     [sg.Text('r_out, rayon extérieur'), sg.Input(key='In_REC_r_out', size=(5,1))],
@@ -117,8 +139,8 @@ while True:
         break
     if event == "-PROFILE-":  # un profilé a été selectionné
         nom_profile = values["-PROFILE-"]
-        adresse = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
-        window['-IMAGEPROFILE-'].update(adresse)
+        adresse_image = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
+        window['-IMAGEPROFILE-'].update(adresse_image)
 
         #Effacer les colonnes éventuellement affichées lors d'une sélection
         window['col_IPE'].update(visible=False)
@@ -144,6 +166,8 @@ while True:
             window['col_Rectangle'].update(visible=True)
         if nom_profile[0] == "Tube":
             window['col_Tube'].update(visible=True)
+
+        
 
     if event == "Calcul":
         torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],

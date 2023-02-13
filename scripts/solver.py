@@ -104,7 +104,6 @@ def calcul(profile, param_geom, param_gene, torseur):
                 #ax = section.plot_centroids(nrows=3, ncols=3, figsize=(15, 10), render=False)
                 ax = stress_post.plot_stress_n_zz(nrows=3, ncols=3, figsize=(15, 10), render=False, title="Traction liée à l'effort normal")
                 fig = ax.get_figure()
-                #stress_post.plot_stress_n_zz(ax=fig.axes[1], title="Traction liée à l'effort normal")
                 stress_post.plot_stress_mxx_zz(ax=fig.axes[1], title="Flexion liée au moment suivant X")
                 stress_post.plot_stress_myy_zz(ax=fig.axes[2], title="Flexion liée au moment suivant Y")
                 stress_post.plot_stress_vx_zxy(ax=fig.axes[3], title="Cisaillement lié à l'effort suivant X")
@@ -113,18 +112,10 @@ def calcul(profile, param_geom, param_gene, torseur):
                 stress_post.plot_stress_zz(ax=fig.axes[6], title="Traction tous chargements")
                 stress_post.plot_stress_zxy(ax=fig.axes[7], title="Cisaillement tous chargements")
                 section.plot_centroids(ax=fig.axes[8], title="Géométrie")
+                #ax.ticklabel_format(axis='both', style='plain') #NE MARCHE PAS !
+                #ax.set_major_formatter(ticker.StrMethodFormatter("{x:.3f}"))
                 plt.show()
 
-
-        #####################################AFFICHAGE CONTRAINTES################################################
-        #stress_post.plot_stress_n_zz(pause=False) #Traction liée à l'effort normal
-        #stress_post.plot_stress_vx_zxy(pause=False) #Cisaillement lié à l'effort suivant X
-        #stress_post.plot_stress_vy_zxy(pause=False)  #Cisaillement lié à l'effort suivant Y
-        #stress_post.plot_stress_mxx_zz(pause=False) #Flexion liée au moment suivant X
-        #stress_post.plot_stress_myy_zz(pause=False) #Flexion liée au moment suivant Y
-        #stress_post.plot_stress_mzz_zxy(pause=False) #Torsion liée au moment suivant Z
-        #stress_post.plot_stress_zz(pause=False) #Traction tous chargements
-        #stress_post.plot_stress_zxy(pause=False) #Cisaillement tous chargements
 
         #####################################DEPOUILLEMENT CONTRAINTES###########################################
         stresses = stress_post.get_stress()
