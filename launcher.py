@@ -18,16 +18,17 @@ def charger_profile(adresse):
             dic_dim[new_key] = []
 
             for j in range(column_count-1):
-                #dic_dim[new_key].append(j)
-                dic_dim[new_key].append(sheet.cell(row=2+i, column=j+1).value)
+                dic_dim[new_key].append(sheet.cell(row=2+i, column=j+2).value)
 
         wb.close()
-        print(dic_dim)
         return(dic_dim)
     except:
         print('Pas de fichier liste à charger')
 
 
+
+adr_list_COR = os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx"
+adr_list_IPE = os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx"
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
@@ -71,7 +72,7 @@ col_IPN = [[sg.Text('d, hauteur'), sg.Input(key='In_IPN_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_IPN_n_r', size=(5,1))]
     ]
 
-col_IPE = [[sg.Combo(values=list(charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx")), readonly=True, k='-LISTE_IPE-', size=(20,1))],
+col_IPE = [[sg.Combo(values=list(charger_profile(adr_list_IPE)), readonly=True, k='-LISTE_IPE-', size=(20,1))],
     [sg.Text('d, hauteur'), sg.Input(key='In_IPE_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_IPE_b', size=(5,1))],
     [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_IPE_t_f', size=(5,1))],
@@ -98,7 +99,7 @@ col_UPE = [[sg.Text('d, hauteur'), sg.Input(80, key='In_UPE_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_UPE_n_r', size=(5,1))]
     ]
 
-col_Corniere = [[sg.Combo(values=list(charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")), readonly=True, k='-LISTE_COR-', size=(20,1))],
+col_Corniere = [[sg.Combo(values=list(charger_profile(adr_list_COR)), readonly=True, k='-LISTE_COR-', size=(20,1), enable_events=True)],
     [sg.Text('d, hauteur'), sg.Input(key='In_COR_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_COR_b', size=(5,1))],
     [sg.Text('t, épaisseur'), sg.Input(key='In_COR_t', size=(5,1))],
@@ -175,6 +176,15 @@ while True:
             window['col_Tube'].update(visible=True)
 
         
+    if event == "-LISTE_COR-":
+        profile_courant = charger_profile(adr_list_COR)
+        window['In_COR_d'].update(value=profile_courant[values['-LISTE_COR-']][0])
+        window['In_COR_b'].update(value=profile_courant[values['-LISTE_COR-']][1])
+        window['In_COR_t'].update(value=profile_courant[values['-LISTE_COR-']][2])
+        window['In_COR_r_r'].update(value=profile_courant[values['-LISTE_COR-']][3])
+        window['In_COR_r_t'].update(value=profile_courant[values['-LISTE_COR-']][4])
+
+
 
     if event == "Calcul":
         torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
