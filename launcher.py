@@ -28,9 +28,11 @@ def charger_profile(adresse):
 
 
 #Chargement des proprietes de charge profilé
-dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")
 dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx")
 dic_dim_IPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPN.xlsx")
+dic_dim_UPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPN.xlsx")
+dic_dim_UPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPE.xlsx")
+dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
@@ -84,7 +86,8 @@ col_IPE = [[sg.Combo(values=list(dic_dim_IPE), readonly=True, k='-LISTE_IPE-', s
     [sg.Text('n_r, nombre de points de discrétisation du rayon'), sg.Input(15, key='In_IPE_n_r', size=(5,1))]
     ]
 
-col_UPN = [[sg.Text('d, hauteur'), sg.Input(key='In_UPN_d', size=(5,1))],
+col_UPN = [[sg.Combo(values=list(dic_dim_UPN), readonly=True, k='-LISTE_UPN-', size=(20,1), enable_events=True)],
+    [sg.Text('d, hauteur'), sg.Input(key='In_UPN_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(key='In_UPN_b', size=(5,1))],
     [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(key='In_UPN_t_f', size=(5,1))],
     [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(key='In_UPN_t_w', size=(5,1))],
@@ -94,7 +97,8 @@ col_UPN = [[sg.Text('d, hauteur'), sg.Input(key='In_UPN_d', size=(5,1))],
     [sg.Text('n_r, nombre de points de discrétisation des rayons'), sg.Input(15, key='In_UPN_n_r', size=(5,1))]
     ]
 
-col_UPE = [[sg.Text('d, hauteur'), sg.Input(80, key='In_UPE_d', size=(5,1))],
+col_UPE = [[sg.Combo(values=list(dic_dim_UPE), readonly=True, k='-LISTE_UPE-', size=(20,1), enable_events=True)],
+    [sg.Text('d, hauteur'), sg.Input(80, key='In_UPE_d', size=(5,1))],
     [sg.Text('b, largeur'), sg.Input(40, key='In_UPE_b', size=(5,1))],
     [sg.Text('t_f, épaisseur de l\'aile'), sg.Input(5, key='In_UPE_t_f', size=(5,1))],
     [sg.Text('t_w, épaisseur de l\'ame'), sg.Input(5, key='In_UPE_t_w', size=(5,1))],
@@ -192,6 +196,22 @@ while True:
         window['In_IPE_t_f'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][2])
         window['In_IPE_t_w'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][3])
         window['In_IPE_r'].update(value=dic_dim_IPE[values['-LISTE_IPE-']][4])
+
+    if event == "-LISTE_UPN-":
+        window['In_UPN_d'].update(value=dic_dim_UPN[values['-LISTE_UPN-']][0])
+        window['In_UPN_b'].update(value=dic_dim_UPN[values['-LISTE_UPN-']][1])
+        window['In_UPN_t_f'].update(value=dic_dim_UPN[values['-LISTE_UPN-']][2])
+        window['In_UPN_t_w'].update(value=dic_dim_UPN[values['-LISTE_UPN-']][3])
+        window['In_UPN_r_r'].update(value=dic_dim_UPN[values['-LISTE_UPN-']][4])
+        window['In_UPN_r_f'].update(value=dic_dim_UPN[values['-LISTE_UPN-']][5])
+        window['In_UPN_alpha'].update(value=dic_dim_UPN[values['-LISTE_UPN-']][6])
+
+    if event == "-LISTE_UPE-":
+        window['In_UPE_d'].update(value=dic_dim_UPE[values['-LISTE_UPE-']][0])
+        window['In_UPE_b'].update(value=dic_dim_UPE[values['-LISTE_UPE-']][1])
+        window['In_UPE_t_f'].update(value=dic_dim_UPE[values['-LISTE_UPE-']][2])
+        window['In_UPE_t_w'].update(value=dic_dim_UPE[values['-LISTE_UPE-']][3])
+        window['In_UPE_r'].update(value=dic_dim_UPE[values['-LISTE_UPE-']][4])
 
     if event == "-LISTE_COR-":
         window['In_COR_d'].update(value=dic_dim_COR[values['-LISTE_COR-']][0])
