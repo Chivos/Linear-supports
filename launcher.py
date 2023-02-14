@@ -31,12 +31,12 @@ def charger_profile(adresse):
 dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx")
 dic_dim_IPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPN.xlsx")
 dic_dim_UPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPN.xlsx")
-dic_dim_UPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPE.xlsx")
+dic_dim_UPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPE-UAP.xlsx")
 dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
-    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE', 'Corniere', 'Rectangle', 'Tube'), default_values='UPE', size=(10, 7), enable_events=True, key="-PROFILE-")],
+    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE-UAP', 'Corniere', 'Rectangle', 'Tube'), default_values='UPE', size=(10, 7), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur'), sg.Input(key='-LONGUEUR-', tooltip='mm', size=(10,1))],
     [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
     [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', tooltip='N', size=(10,1))],
@@ -172,7 +172,7 @@ while True:
             window['col_IPE'].update(visible=True)
         if nom_profile[0] == "UPN":
             window['col_UPN'].update(visible=True)
-        if nom_profile[0] == "UPE":
+        if nom_profile[0] == "UPE-UAP":
             window['col_UPE'].update(visible=True)
         if nom_profile[0] == "Corniere":
             window['col_Corniere'].update(visible=True)
@@ -244,7 +244,7 @@ while True:
                 'UPN_r_r':values['In_UPN_r_r'], 'UPN_r_f':values['In_UPN_r_f'], 'UPN_alpha':values['In_UPN_alpha'], 'UPN_n_r':values['In_UPN_n_r']}
             solver.calcul("UPN", param_geom, param_gene, torseur)
 
-        if nom_profile[0] == "UPE":
+        if nom_profile[0] == "UPE-UAP":
             param_geom = {'UPE_d':values['In_UPE_d'], 'UPE_b':values['In_UPE_b'], 'UPE_t_f':values['In_UPE_t_f'], 'UPE_t_w':values['In_UPE_t_w'],
                 'UPE_r':values['In_UPE_r'], 'UPE_n_r':values['In_UPE_n_r']}
             solver.calcul("UPE", param_geom, param_gene, torseur)
