@@ -14,5 +14,6 @@ Some checks were done using available results from RSTAB + ASD.
 - sectionproperties
 - texttable
 - PySimpleGUI
+- openpyxl
 
 All dependancies available on PyPI, with pip
