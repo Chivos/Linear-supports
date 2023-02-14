@@ -139,14 +139,12 @@ def calcul(profile, param_geom, param_gene, torseur):
         #########################################AFFICHAGE ET CALCUL RATIOS########################################
                 
         table = Texttable()
-
-        #Traction ou compression
-        table.header(["", "Contrainte", "", "Limite", "Ratio", "Description"]) #afficher traction ou compression selon résultat
-        if N < 0:
-                table.add_row(["fa", fa, "Fa", Fa, abs(fa/Fa), "Compression ZVI2214"])
-        else:
-                table.add_row(["fa", fa, "Ft", Ft, abs(fa/Ft), "Traction ZVI2212"])
-
+        table.header(["", "Contrainte", "", "Limite", "Ratio", "Description"])
+        
+        #Traction et compression
+        table.add_row(["fa", fa if N>0 else 0, "Ft", Ft, abs(fa/Ft) if N>0 else 0, "Traction ZVI2212"])
+        table.add_row(["fa", fa if N<0 else 0, "Fa", Fa, abs(fa/Fa) if N<0 else 0, "Compression ZVI2214"])
+        
         #Cisaillement
         table.add_row(["fv", fv, "Fv", Fv, abs(fv/Fv), "Cisaillement ZVI2213"]) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
 
