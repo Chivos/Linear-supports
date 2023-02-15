@@ -7,7 +7,7 @@ from scripts import solver
 
 def charger_profile(adresse):
     try:
-        wb = load_workbook(adresse, read_only=True)
+        wb = load_workbook(adresse, read_only=True, data_only=True)
         sheet = wb.worksheets[0]
         row_count = sheet.max_row #Nombre de lignes dans le fichier des dimensions
         column_count = sheet.max_column #Nombre de colonnes
