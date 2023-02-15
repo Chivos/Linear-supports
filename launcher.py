@@ -28,7 +28,7 @@ def charger_profile(adresse):
 
 
 #Chargement des proprietes de charge profilé
-dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE.xlsx")
+dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE-HE.xlsx")
 dic_dim_IPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPN.xlsx")
 dic_dim_UPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPN.xlsx")
 dic_dim_UPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPE-UAP.xlsx")
@@ -36,7 +36,7 @@ dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\l
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='C', size=(10, 3), key='-NIVEAU_RCCM-')],
-    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE', 'UPN', 'UPE-UAP', 'Corniere', 'Rectangle', 'Tube'), default_values='UPE', size=(10, 7), enable_events=True, key="-PROFILE-")],
+    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE-HE', 'UPN', 'UPE-UAP', 'Corniere', 'Rectangle', 'Tube'), default_values='UPE', size=(10, 7), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur'), sg.Input(key='-LONGUEUR-', tooltip='mm', size=(10,1))],
     [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
     [sg.Frame('Torseur:', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', tooltip='N', size=(10,1))],
@@ -168,7 +168,7 @@ while True:
         #Afficher colonnes en fonction de la section
         if nom_profile[0] == "IPN":
             window['col_IPN'].update(visible=True)
-        if nom_profile[0] == "IPE":
+        if nom_profile[0] == "IPE-HE":
             window['col_IPE'].update(visible=True)
         if nom_profile[0] == "UPN":
             window['col_UPN'].update(visible=True)
@@ -234,7 +234,7 @@ while True:
                 'IPN_r_r':values['In_IPN_r_r'], 'IPN_r_f':values['In_IPN_r_f'], 'IPN_alpha':values['In_IPN_alpha'], 'IPN_n_r':values['In_IPN_n_r']}
             solver.calcul("IPN", param_geom, param_gene, torseur)
 
-        if nom_profile[0] == "IPE":
+        if nom_profile[0] == "IPE-HE":
             param_geom = {'IPE_d':values['In_IPE_d'], 'IPE_b':values['In_IPE_b'], 'IPE_t_f':values['In_IPE_t_f'],
                 'IPE_t_w':values['In_IPE_t_w'], 'IPE_r':values['In_IPE_r'], 'IPE_n_r':values['In_IPE_n_r']}
             solver.calcul("IPE", param_geom, param_gene, torseur)
