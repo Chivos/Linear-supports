@@ -1,39 +1,36 @@
 import os
 import PySimpleGUI as sg
-from openpyxl import Workbook
-from openpyxl import load_workbook
+import csv
 from scripts import solver
 from itertools import product
 
 
 def charger_profile(adresse):
     try:
-        wb = load_workbook(adresse, read_only=True, data_only=True)
-        sheet = wb.worksheets[0]
-        row_count = sheet.max_row #Nombre de lignes dans le fichier des dimensions
-        column_count = sheet.max_column #Nombre de colonnes
         dic_dim = {}
+        with open(adresse, 'r') as file:
+            csvreader = csv.reader(file,  delimiter=';')
+            column_count = len(next(csvreader))
 
-        for i in range(row_count-1): #retrancher 1 pour ligne d'en tete du tableau
-            new_key = (sheet.cell(row=2+i, column=1).value) #ajout dimension cornière dans liste
-            dic_dim[new_key] = []
+            dic_dim = {}
+            for row in csvreader:
 
-            for j in range(column_count-1):
-                dic_dim[new_key].append(sheet.cell(row=2+i, column=j+2).value)
+                new_key = row[0]
+                dic_dim[new_key] = []
+                
+                for column in range(column_count-1):
+                    dic_dim[new_key].append(row[column+1])
 
-        wb.close()
         return(dic_dim)
     except:
         print('Pas de fichier liste à charger à l\'adresse', adresse)
 
-
-
 #Chargement des proprietes de charge profilé
-dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE-HE.xlsx")
-dic_dim_IPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPN.xlsx")
-dic_dim_UPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPN.xlsx")
-dic_dim_UPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPE-UAP.xlsx")
-dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.xlsx")
+dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE-HE.csv")
+dic_dim_IPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPN.csv")
+dic_dim_UPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPN.csv")
+dic_dim_UPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPE-UAP.csv")
+dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.csv")
 
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='0AB', size=(10, 3), key='-NIVEAU_RCCM-')],
