@@ -8,7 +8,11 @@ Stress limit for U sections in bending may be lower than the criteria.
 Program is provided without responsabilities on results.
 Some checks were done using available results from RSTAB + ASD.
 
-# Dependancies
+# Installation and use 
+Download a copy of this repo, and start with python the "launcher.py" file.
+Make sure that folders with steel section tables and images are located next to the launcher file, as in this repo.
+
+Dependancies needed are the following :
 - sectionproperties
 - texttable
 - PySimpleGUI
