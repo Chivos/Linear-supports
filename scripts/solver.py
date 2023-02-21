@@ -151,5 +151,5 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         print(table.draw())
 
-        RCCM.ratios(fa, Fa, Ft, fv, Fv, fbx, Fbx, fby, Fby, E, K, l, r_g)
+        RCCM.ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max, Fby, E, K, l, r_g)
         ###########################################FIN##################################################################
