@@ -37,6 +37,7 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
     [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE-HE', 'UPN', 'UPE-UAP', 'Corniere', 'Rectangle', 'Tube'), size=(10, 7), enable_events=True, key="-PROFILE-")],
     [sg.Text('Longueur'), sg.Input(key='-LONGUEUR-', tooltip='mm', size=(10,1))],
     [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
+    [sg.Text('Cmx'), sg.Input(1, key='-CMX-', tooltip='Valeur enveloppe : 1', size=(5,1)), sg.Text('Cmy'), sg.Input(1, key='-CMY-', tooltip='Valeur enveloppe : 1', size=(5,1))],
     [sg.Frame('Torseur', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', tooltip='N', size=(10,1))],
                              [sg.Text('Fx'), sg.Input(0, key='-TORSEUR_FX-', tooltip='N', size=(10,1))],
                              [sg.Text('Fy'), sg.Input(0, key='-TORSEUR_FY-', tooltip='N', size=(10,1))],
@@ -229,7 +230,8 @@ while True:
             except:
                 pass
 
-        param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'], 'angle':values['-ANGLEROT-'],
+        param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'],
+            'cmx':values['-CMX-'], 'cmy':values['-CMY-'], 'angle':values['-ANGLEROT-'],
             'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-'], 'impr_res':values['-PRINT_PARAM-'], 'trac_res':values['-DRAW_RESULTS-']}
 
         for key, value in param_gene.items():
