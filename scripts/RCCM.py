@@ -48,8 +48,8 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
                 print('pour un tube')
                 Fbx=r * min(Sy*0.66, Su*0.55) #ZVI2215.2 Flexion
                 Fby=Fbx
-                
-        elancement = K*l/r_g
+        
+        elancement = K*l/min(r_g)
         Cc=((2*pi**2*E)/Sy)**0.5
         
         if elancement <= Cc:
@@ -58,3 +58,36 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
                 Fa=r * 12*pi**2*E/(23*elancement**2) #equation 5 ZVI2214.2
         
         return (Fa, Ft, Fv, Fbx, Fby)
+
+
+def ratios(fa, Fa, Ft, fv, Fv, fbx, Fbx, fby, Fby, E, K, l, r_g):
+        ratios = {}
+        ratios['T_2212'] = abs(fa/Ft) if fa>0 else 0
+        ratios['C_2214'] = abs(fa/Fa) if fa<0 else 0
+        ratios['S_2213'] = abs(fv/Fv) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
+        ratios['F_2215_x']= abs(fbx/Fbx)
+        ratios['F_2215_y']= abs(fby/Fby)
+
+        if abs(fa/Fa) <= 0.15: #voir si pertinent de 
+                if fa < 0:
+                       ratios['SC_2216_22'] = abs(fa/Fa + fbx_min/Fbx + fby_min/Fby)
+                else:
+                        ratios['SC_2216_22'] = abs(fbx_min/Fbx + fby_min/Fby)  #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
+        else:
+                Fpex = (12*pi**2*E)/(23*(K*l/r_g[0])**2)
+                Fpey = (12*pi**2*E)/(23*(K*l/r_g[1])**2)
+                print(Fpex, Fpey)
+                #if fa < 0:
+
+
+        print(ratios)
+"""
+        #Combinaison compression et flexion
+        if abs(fa/Fa) <= 0.15:
+                table.add_row(["(22)", "", "", "", abs( (fa/Fa if fa<0 else 0) + fbx_min/Fbx + fby_min/Fby), "Compression et flexion ZVI2216.1"]) #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
+        else :
+                table.add_row(["", "", "", "", "", "NON PROGRAMME EQ (20) ET (21) POUR COMPRESSION"]) ###S'affiche avec un torseur de traction pure
+
+        #Combinaison traction et flexion
+        table.add_row(["(21)", "", "", "", abs( (fa/Fa if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby), "Traction et flexion ZVI2216.2"])
+"""

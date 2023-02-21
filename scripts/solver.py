@@ -81,7 +81,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         K=param_gene['K'] #conditions aux extremités
         l=param_gene['L'] #lambda, longueur
 
-        r_g = min(section.get_rc()) #rayon de giration pour calcul élancement
+        r_g = section.get_rc() #rayons de giration pour calcul élancement
         (ixx_c, iyy_c, ixy_c) = section.get_ic() #pour déterminer axe fort et axe faible et choix de la limite en flexion pour les poutres en I et H
 
         #####################################IMPRESSION RESULTATS PROPRIETES DE SECTION################################################
@@ -107,7 +107,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         stresses = stress_post.get_stress()
         for stress in stresses:
                 fa=(max(stress['sig_zz_n']))
-                fv=(max(stress['sig_zxy']))
+                fv=max( (max(stress['sig_zxy'])) , abs((min(stress['sig_zxy']))))
                 fbx_max=(max(stress['sig_zz_mxx']))
                 fby_max=(max(stress['sig_zz_myy']))
                 fb_max=(max(stress['sig_zz_m']))
@@ -151,4 +151,5 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         print(table.draw())
 
+        RCCM.ratios(fa, Fa, Ft, fv, Fv, fbx, Fbx, fby, Fby, E, K, l, r_g)
         ###########################################FIN##################################################################
