@@ -18,3 +18,6 @@ Dependancies needed are the following :
 - PySimpleGUI
 
 All dependancies available on PyPI, with pip
+
+# Documentation
+See Wiki for more details
