@@ -60,7 +60,7 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
         return (Fa, Ft, Fv, Fbx, Fby)
 
 
-def ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max, Fby, E, K, l, r_g):
+def ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max, Fby, E, K, l, r_g, cmx, cmy):
         ratios = {}
         ratios['T_2212'] = abs(fa/Ft) if fa>0 else 0
         ratios['C_2214'] = abs(fa/Fa) if fa<0 else 0
@@ -68,26 +68,26 @@ def ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max
         ratios['F_2215_x']= abs(fbx/Fbx)
         ratios['F_2215_y']= abs(fby/Fby)
 
-        if abs(fa/Fa) <= 0.15: #voir si pertinent de 
+        if abs(fa/Fa) <= 0.15: #voir si pertinent
                 if fa < 0:
-                        ratios['SC_2216_22'] = abs(fa/Fa + fbx_min/Fbx + fby_min/Fby)
+                        ratios['SC_2216.1_22'] = abs(fa/Fa + fbx_min/Fbx + fby_min/Fby)
                 else:
-                        ratios['SC_2216_22'] = abs(fbx_min/Fbx + fby_min/Fby)  #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
+                        ratios['SC_2216.1_22'] = abs(fbx_min/Fbx + fby_min/Fby)  #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
         else:
                 Fpex = (12*pi**2*E)/(23*(K*l/r_g[0])**2)
                 Fpey = (12*pi**2*E)/(23*(K*l/r_g[1])**2)
-                print(Fpex, Fpey)
-                #if fa < 0:
+                if fa < 0:
+                        ratios['SC_2216.1_20'] = abs( fa/Fa + (cmx*fbx_min)/((1-fa/Fpex)*Fbx) + (cmy*fby_min)/((1-fa/Fpey)*Fby) )
+                        ratios['SC_2216.1_21'] = abs(fa/Ft + fbx_min/Fbx + fby_min/Fby)
+                else :
+                        ratios['SC_2216.1_20'] = abs( (cmx*fbx_min)/((1-fa/Fpex)*Fbx) + (cmy*fby_min)/((1-fa/Fpey)*Fby) )
+                        ratios['SC_2216.1_21'] = abs( fbx_min/Fbx + fby_min/Fby)
 
+        ratios['SC_2216.2_21'] = abs( (fa/Fa if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby)
 
         print(ratios)
 """
-        #Combinaison compression et flexion
-        if abs(fa/Fa) <= 0.15:
-                table.add_row(["(22)", "", "", "", abs( (fa/Fa if fa<0 else 0) + fbx_min/Fbx + fby_min/Fby), "Compression et flexion ZVI2216.1"]) #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
-        else :
-                table.add_row(["", "", "", "", "", "NON PROGRAMME EQ (20) ET (21) POUR COMPRESSION"]) ###S'affiche avec un torseur de traction pure
-
+        
         #Combinaison traction et flexion
         table.add_row(["(21)", "", "", "", abs( (fa/Fa if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby), "Traction et flexion ZVI2216.2"])
 """
