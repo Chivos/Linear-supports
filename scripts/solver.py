@@ -8,7 +8,10 @@ from sectionproperties.pre.library.steel_sections import angle_section #Cornièr
 from sectionproperties.pre.library.steel_sections import circular_hollow_section #Tube
 from sectionproperties.analysis.section import Section
 from texttable import Texttable
+from prettytable import PrettyTable
 import matplotlib.pyplot as plt
+import os #pour couleurs
+os.system("color") #pour couleur
 
 
 def calcul_geom(profile, param_geom, param_gene):
@@ -81,7 +84,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         K=param_gene['K'] #conditions aux extremités
         l=param_gene['L'] #lambda, longueur
         cmx=param_gene['cmx']
-        cmx=param_gene['cmy']
+        cmy=param_gene['cmy']
 
         r_g = section.get_rc() #rayons de giration pour calcul élancement
         (ixx_c, iyy_c, ixy_c) = section.get_ic() #pour déterminer axe fort et axe faible et choix de la limite en flexion pour les poutres en I et H
@@ -124,34 +127,47 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         #################################################CALCUL LIMITES###############################################
         (Fa, Ft, Fv, Fbx, Fby) = RCCM.criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E)
 
-        #########################################AFFICHAGE ET CALCUL RATIOS########################################
-        
+        #########################################CALCUL ET AFFICHAGE RATIOS########################################
+
+        ratios = RCCM.ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max, Fby, E, K, l, r_g, cmx, cmy)
+        ratio_max = max(ratios.values())
+
         print('Facteurs de signes sur torseur : ', facteurs)
 
-        table = Texttable()
-        table.header(["", "Contrainte", "", "Limite", "Ratio", "Description"])
+        table = PrettyTable()
+        table.field_names = ["/", "Contrainte", "\\", "Limite", "Ratio", "Description"]
+        table.align['Description'] = 'l'
         
         #Traction et compression
-        table.add_row(["fa", fa if N>0 else 0, "Ft", Ft, abs(fa/Ft) if N>0 else 0, "Traction ZVI2212"])
-        table.add_row(["fa", fa if N<0 else 0, "Fa", Fa, abs(fa/Fa) if N<0 else 0, "Compression ZVI2214"])
+        table.add_row(["fa", fa if N>0 else 0, "Ft", Ft, ratios['T_2212'], "Traction ZVI2212"])
+        table.add_row(["fa", fa if N<0 else 0, "Fa", Fa, ratios['C_2214'], "Compression ZVI2214"])
         
         #Cisaillement
-        table.add_row(["fv", fv, "Fv", Fv, abs(fv/Fv), "Cisaillement ZVI2213"]) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
+        table.add_row(["fv", fv, "Fv", Fv, ratios['S_2213'], "Cisaillement ZVI2213"]) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
 
         #Flexion
-        table.add_row(["fbx", fbx, "Fbx", Fbx, abs(fbx/Fbx), "Flexion ZVI2215"])
-        table.add_row(["fby", fby, "Fby", Fby, abs(fby/Fby), "Flexion ZVI2215"])
+        table.add_row(["fbx", fbx, "Fbx", Fbx, ratios['F_2215_x'], "Flexion ZVI2215"])
+        table.add_row(["fby", fby, "Fby", Fby, ratios['F_2215_y'], "Flexion ZVI2215"])
 
         #Combinaison compression et flexion
         if abs(fa/Fa) <= 0.15:
-                table.add_row(["(22)", "", "", "", abs( (fa/Fa if fa<0 else 0) + fbx_min/Fbx + fby_min/Fby), "Compression et flexion ZVI2216.1"]) #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
+                table.add_row(["(22)", "", "", "", ratios['SC_2216.1_22'], "Compression et flexion ZVI2216.1"]) #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
         else :
-                table.add_row(["", "", "", "", "", "NON PROGRAMME EQ (20) ET (21) POUR COMPRESSION"]) ###S'affiche avec un torseur de traction pure
+                table.add_row(["(20)", "", "", "", ratios['SC_2216.1_20'], "Compression et flexion ZVI2216.1"]) #S'affiche avec un torseur de traction pure
+                table.add_row(["(21)", "", "", "", ratios['SC_2216.1_21'], "Compression et flexion ZVI2216.1"]) #S'affiche avec un torseur de traction pure
 
         #Combinaison traction et flexion
-        table.add_row(["(21)", "", "", "", abs( (fa/Fa if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby), "Traction et flexion ZVI2216.2"])
+        table.add_row(["(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2"])
 
-        print(table.draw())
+        if ratio_max > 1:
+                ratio_max_text = '\x1b[41m' + str("{0:.3f}".format(ratio_max)) + '\x1b[0m'
+        else:
+                ratio_max_text = '\x1b[42m' + str("{0:.3f}".format(ratio_max)) + '\x1b[0m'
 
-        RCCM.ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max, Fby, E, K, l, r_g, cmx, cmy)
+        table.add_row(["MAX", "", "", "", ratio_max_text, "Ratio maximal"])
+        table.float_format = '0.3'
+
+        print(table)
+
+
         ###########################################FIN##################################################################

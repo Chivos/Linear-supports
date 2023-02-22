@@ -85,7 +85,8 @@ def ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max
 
         ratios['SC_2216.2_21'] = abs( (fa/Fa if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby)
 
-        print(ratios)
+        
+        return ratios
 """
         
         #Combinaison traction et flexion
