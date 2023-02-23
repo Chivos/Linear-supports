@@ -91,7 +91,4 @@ def ratios(contraintes, limites, E, K, l, r_g, cmx, cmy):
 
         ratios['MAX'] = max(ratios.values())
 
-        for k in ratios:
-                ratios[k] = round(ratios[k], 3)
-
         return ratios
