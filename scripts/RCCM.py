@@ -83,9 +83,11 @@ def ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max
                         ratios['SC_2216.1_20'] = abs( (cmx*fbx_min)/((1-fa/Fpex)*Fbx) + (cmy*fby_min)/((1-fa/Fpey)*Fby) )
                         ratios['SC_2216.1_21'] = abs( fbx_min/Fbx + fby_min/Fby)
 
-        ratios['SC_2216.2_21'] = abs( (fa/Fa if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby)
+        ratios['SC_2216.2_21'] = abs( (fa/Ft if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby) #Ft ou Fa ?
 
-        
+        for k in ratios:
+                ratios[k] = round(ratios[k], 3)
+
         return ratios
 """
         

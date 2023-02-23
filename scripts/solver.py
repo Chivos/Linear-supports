@@ -158,16 +158,25 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         #Combinaison traction et flexion
         table.add_row(["(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2"])
-
+        
         if ratio_max > 1:
-                ratio_max_text = '\x1b[41m' + str("{0:.3f}".format(ratio_max)) + '\x1b[0m'
+                ratio_max_text = '\x1b[41m' + str("{0:.3g}".format(ratio_max)) + '\x1b[0m'
         else:
-                ratio_max_text = '\x1b[42m' + str("{0:.3f}".format(ratio_max)) + '\x1b[0m'
-
+                ratio_max_text = '\x1b[42m' + str("{0:.3g}".format(ratio_max)) + '\x1b[0m'
+        
         table.add_row(["MAX", "", "", "", ratio_max_text, "Ratio maximal"])
-        table.float_format = '0.3'
+        
+        #table.float_format = '0.3'
+        #table.custom_format["Contrainte"] = lambda f, v: f"{v:.3g}"
+        
+        #table.custom_format["Limite"] = lambda f, v: f"{v:.3g}"
+        
+        #table.custom_format["Ratio"] = lambda f, v: f"{v:.3g}"
+        
 
         print(table)
 
+
+        
 
         ###########################################FIN##################################################################
