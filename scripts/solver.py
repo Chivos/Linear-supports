@@ -109,28 +109,29 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
 
         #####################################DEPOUILLEMENT CONTRAINTES###########################################
+        contraintes = {}
         stresses = stress_post.get_stress()
         for stress in stresses:
-                fa=(max(stress['sig_zz_n']))
-                fv=max( (max(stress['sig_zxy'])) , abs((min(stress['sig_zxy']))))
-                fbx_max=(max(stress['sig_zz_mxx']))
-                fby_max=(max(stress['sig_zz_myy']))
-                fb_max=(max(stress['sig_zz_m']))
-                fbx_min=(min(stress['sig_zz_mxx']))
-                fby_min=(min(stress['sig_zz_myy']))
-                fb_min=(min(stress['sig_zz_m']))
+                contraintes['fa']=(max(stress['sig_zz_n']))
+                contraintes['fv']=max( (max(stress['sig_zxy'])) , abs((min(stress['sig_zxy']))))
+                contraintes['fbx_max']=(max(stress['sig_zz_mxx']))
+                contraintes['fby_max']=(max(stress['sig_zz_myy']))
+                contraintes['fb_max']=(max(stress['sig_zz_m']))
+                contraintes['fbx_min']=(min(stress['sig_zz_mxx']))
+                contraintes['fby_min']=(min(stress['sig_zz_myy']))
+                contraintes['fb_min']=(min(stress['sig_zz_m']))
 
-        fbx=fbx_min if abs(fbx_min)>fbx_max else fbx_max
-        fby=fby_min if abs(fby_min)>fby_max else fby_max
+        contraintes['fbx']=contraintes['fbx_min'] if abs(contraintes['fbx_min'])>contraintes['fbx_max'] else contraintes['fbx_max']
+        contraintes['fby']=contraintes['fby_min'] if abs(contraintes['fby_min'])>contraintes['fby_max'] else contraintes['fby_max']
 
 
         #################################################CALCUL LIMITES###############################################
-        (Fa, Ft, Fv, Fbx, Fby) = RCCM.criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E)
+        limites = RCCM.criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E)
 
         #########################################CALCUL ET AFFICHAGE RATIOS########################################
 
-        ratios = RCCM.ratios(fa, Fa, Ft, fv, Fv, fbx, fbx_min, fbx_max, Fbx, fby, fby_min, fby_max, Fby, E, K, l, r_g, cmx, cmy)
-        ratio_max = max(ratios.values())
+        ratios = RCCM.ratios(contraintes, limites, E, K, l, r_g, cmx, cmy)
+        
 
         print('Facteurs de signes sur torseur : ', facteurs)
 
@@ -139,18 +140,18 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         table.align['Description'] = 'l'
         
         #Traction et compression
-        table.add_row(["fa", fa if N>0 else 0, "Ft", Ft, ratios['T_2212'], "Traction ZVI2212"])
-        table.add_row(["fa", fa if N<0 else 0, "Fa", Fa, ratios['C_2214'], "Compression ZVI2214"])
+        table.add_row(["fa", contraintes['fa'] if N>0 else 0, "Ft", limites['Ft'], ratios['T_2212'], "Traction ZVI2212"])
+        table.add_row(["fa", contraintes['fa'] if N<0 else 0, "Fa", limites['Fa'], ratios['C_2214'], "Compression ZVI2214"])
         
         #Cisaillement
-        table.add_row(["fv", fv, "Fv", Fv, ratios['S_2213'], "Cisaillement ZVI2213"]) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
+        table.add_row(["fv", contraintes['fv'], "Fv", limites['Fv'], ratios['S_2213'], "Cisaillement ZVI2213"]) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
 
         #Flexion
-        table.add_row(["fbx", fbx, "Fbx", Fbx, ratios['F_2215_x'], "Flexion ZVI2215"])
-        table.add_row(["fby", fby, "Fby", Fby, ratios['F_2215_y'], "Flexion ZVI2215"])
+        table.add_row(["fbx", contraintes['fbx'], "Fbx", limites['Fbx'], ratios['F_2215_x'], "Flexion ZVI2215"])
+        table.add_row(["fby", contraintes['fby'], "Fby", limites['Fby'], ratios['F_2215_y'], "Flexion ZVI2215"])
 
         #Combinaison compression et flexion
-        if abs(fa/Fa) <= 0.15:
+        if (contraintes['fa']/limites['Fa']) >= -0.15: #Permet de traiter la compression (petite valeurs négatives) et la traction dans le même if
                 table.add_row(["(22)", "", "", "", ratios['SC_2216.1_22'], "Compression et flexion ZVI2216.1"]) #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
         else :
                 table.add_row(["(20)", "", "", "", ratios['SC_2216.1_20'], "Compression et flexion ZVI2216.1"]) #S'affiche avec un torseur de traction pure
@@ -159,10 +160,10 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         #Combinaison traction et flexion
         table.add_row(["(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2"])
         
-        if ratio_max > 1:
-                ratio_max_text = '\x1b[41m' + str("{0:.3g}".format(ratio_max)) + '\x1b[0m'
+        if ratios['MAX'] > 1:
+                ratio_max_text = '\x1b[41m' + str("{0:.3g}".format(ratios['MAX'])) + '\x1b[0m'
         else:
-                ratio_max_text = '\x1b[42m' + str("{0:.3g}".format(ratio_max)) + '\x1b[0m'
+                ratio_max_text = '\x1b[42m' + str("{0:.3g}".format(ratios['MAX'])) + '\x1b[0m'
         
         table.add_row(["MAX", "", "", "", ratio_max_text, "Ratio maximal"])
         
