@@ -7,13 +7,7 @@ from sectionproperties.pre.library.steel_sections import rectangular_hollow_sect
 from sectionproperties.pre.library.steel_sections import angle_section #Cornière
 from sectionproperties.pre.library.steel_sections import circular_hollow_section #Tube
 from sectionproperties.analysis.section import Section
-from texttable import Texttable
-from prettytable import PrettyTable
 import matplotlib.pyplot as plt
-import os #pour couleurs
-os.system("color") #pour couleur
-
-
 from rich.console import Console
 from rich.table import Table
 
@@ -138,62 +132,20 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         
 
         print('Facteurs de signes sur torseur : ', facteurs)
-        """
-        table = PrettyTable()
-        table.field_names = ["/", "Contrainte", "\\", "Limite", "Ratio", "Description"]
-        table.align['Description'] = 'l'
-        
-        #Traction et compression
-        table.add_row(["fa", contraintes['fa'] if N>0 else 0, "Ft", limites['Ft'], ratios['T_2212'], "Traction ZVI2212"])
-        table.add_row(["fa", contraintes['fa'] if N<0 else 0, "Fa", limites['Fa'], ratios['C_2214'], "Compression ZVI2214"])
-        
-        #Cisaillement
-        table.add_row(["fv", contraintes['fv'], "Fv", limites['Fv'], ratios['S_2213'], "Cisaillement ZVI2213"]) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
 
-        #Flexion
-        table.add_row(["fbx", contraintes['fbx'], "Fbx", limites['Fbx'], ratios['F_2215_x'], "Flexion ZVI2215"])
-        table.add_row(["fby", contraintes['fby'], "Fby", limites['Fby'], ratios['F_2215_y'], "Flexion ZVI2215"])
-
-        #Combinaison compression et flexion
-        if (contraintes['fa']/limites['Fa']) >= -0.15: #Permet de traiter la compression (petite valeurs négatives) et la traction dans le même if
-                table.add_row(["(22)", "", "", "", ratios['SC_2216.1_22'], "Compression et flexion ZVI2216.1"]) #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
-        else :
-                table.add_row(["(20)", "", "", "", ratios['SC_2216.1_20'], "Compression et flexion ZVI2216.1"]) #S'affiche avec un torseur de traction pure
-                table.add_row(["(21)", "", "", "", ratios['SC_2216.1_21'], "Compression et flexion ZVI2216.1"]) #S'affiche avec un torseur de traction pure
-
-        #Combinaison traction et flexion
-        table.add_row(["(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2"])
-        
-        if ratios['MAX'] > 1:
-                ratio_max_text = '\x1b[41m' + str("{0:.3g}".format(ratios['MAX'])) + '\x1b[0m'
-        else:
-                ratio_max_text = '\x1b[42m' + str("{0:.3g}".format(ratios['MAX'])) + '\x1b[0m'
-        
-        table.add_row(["MAX", "", "", "", ratio_max_text, "Ratio maximal"])
-        
-        #table.float_format = '0.3'
-        #table.custom_format["Contrainte"] = lambda f, v: f"{v:.3g}"
-        
-        #table.custom_format["Limite"] = lambda f, v: f"{v:.3g}"
-        
-        #table.custom_format["Ratio"] = lambda f, v: f"{v:.3g}"
-        
-        print(table)
-        """
-
-        for k in contraintes.keys():
-                contraintes[k]=str(round(contraintes[k],3))
+        for k in contraintes.keys(): #Conversion en string pour affichage dans Rich. Arrondi à la 3 ème décime et affichage adapté du nombre de 0 décimaux
+                contraintes[k]="{:0.3g}".format(round(contraintes[k],3))
 
         for k in limites.keys():
-                limites[k]=str(round(limites[k],3))
+                limites[k]="{:0.3g}".format(round(limites[k],3))
 
         for k in ratios.keys():
-                ratios[k]=str(round(ratios[k],3))
+                ratios[k]="{:0.3g}".format(round(ratios[k],3))
 
         table = Table(title="Résultats : ", title_justify="left")
         table.add_column("/")
         table.add_column("Contrainte")
-        table.add_column("\\")
+        table.add_column("/")
         table.add_column("Limite")
         table.add_column("Ratio")
         table.add_column("Description")
@@ -226,7 +178,10 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         table.add_section()
 
         #Ratio maximal        
-        table.add_row("MAX", "", "", "", ratios['MAX'], "Ratio maximal")
+        if float(ratios['MAX']) > 1:
+                table.add_row("MAX", "", "", "", "[red]"+ratios['MAX']+"[/red]", "Ratio maximal")
+        else:
+                table.add_row("MAX", "", "", "", "[green]"+ratios['MAX']+"[/green]", "Ratio maximal")
 
         console = Console()
         console.print(table)
