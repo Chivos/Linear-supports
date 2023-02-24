@@ -228,7 +228,7 @@ while True:
             try:
                 torseur[key]=float(value)
             except:
-                pass
+                torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
 
         param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'],
             'cmx':values['-CMX-'], 'cmy':values['-CMY-'], 'angle':values['-ANGLEROT-'],
