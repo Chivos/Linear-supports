@@ -163,7 +163,6 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         table.add_section()
 
-        ####VOIR COMMENT GERER CETTE PARTIE LA QUI PLANTE CAR STR
         #Combinaison compression et flexion
         if (float(contraintes['fa'])/float(limites['Fa'])) >= -0.15: #Permet de traiter la compression (petite valeurs négatives) et la traction dans le même if
                 table.add_row("(22)", "", "", "", ratios['SC_2216.1_22'], "Compression et flexion ZVI2216.1") #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
