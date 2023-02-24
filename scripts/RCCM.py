@@ -54,7 +54,7 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
         Cc=((2*pi**2*E)/Sy)**0.5
         
         if elancement <= Cc:
-                limites['Fa']=r * (1 - elancement**2/(2*Cc**2))*Sy / (5/3 + 3*elancement/(8*Cc) - elancement**3/(8*Cc**3))
+                limites['Fa']=min( r * (1 - elancement**2/(2*Cc**2))*Sy / (5/3 + 3*elancement/(8*Cc) - elancement**3/(8*Cc**3)) , r*0.5*Su)
         else:
                 limites['Fa']=r * 12*pi**2*E/(23*elancement**2) #equation 5 ZVI2214.2
         
