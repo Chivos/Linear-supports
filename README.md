@@ -14,7 +14,7 @@ Make sure that folders with steel section tables and images are located next to 
 
 Dependancies needed are the following :
 - sectionproperties
-- texttable
+- rich
 - PySimpleGUI
 
 All dependancies available on PyPI, with pip
