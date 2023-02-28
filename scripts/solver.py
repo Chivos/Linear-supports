@@ -91,21 +91,6 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         if bool(param_gene['impr_res']) is True:
                 section.display_results()
 
-        #####################################AFFICHAGE CONTRAINTES################################################
-        if bool(param_gene['trac_res']) is True:
-                ax = stress_post.plot_stress_n_zz(nrows=3, ncols=3, figsize=(15, 10), render=False, title="Traction liée à l'effort normal")
-                fig = ax.get_figure()
-                stress_post.plot_stress_mxx_zz(ax=fig.axes[1], title="Flexion liée au moment suivant X")
-                stress_post.plot_stress_myy_zz(ax=fig.axes[2], title="Flexion liée au moment suivant Y")
-                stress_post.plot_stress_vx_zxy(ax=fig.axes[3], title="Cisaillement lié à l'effort suivant X")
-                stress_post.plot_stress_vy_zxy(ax=fig.axes[4], title="Cisaillement lié à l'effort suivant Y")
-                stress_post.plot_stress_mzz_zxy(ax=fig.axes[5], title="Torsion liée au moment suivant Z")
-                stress_post.plot_stress_zz(ax=fig.axes[6], title="Traction tous chargements")
-                stress_post.plot_stress_zxy(ax=fig.axes[7], title="Cisaillement tous chargements")
-                section.plot_centroids(ax=fig.axes[8], title="Géométrie")
-                plt.show()
-
-
         #####################################DEPOUILLEMENT CONTRAINTES###########################################
         contraintes = {}
         stresses = stress_post.get_stress()
@@ -134,13 +119,13 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         print('Facteurs de signes sur torseur : ', facteurs)
 
         for k in contraintes.keys(): #Conversion en string pour affichage dans Rich. Arrondi à la 3 ème décime et affichage adapté du nombre de 0 décimaux
-                contraintes[k]="{:0.3g}".format(round(contraintes[k],3))
+                contraintes[k]="{0:g}".format(round(contraintes[k],2))
 
         for k in limites.keys():
-                limites[k]="{:0.3g}".format(round(limites[k],3))
+                limites[k]="{0:g}".format(round(limites[k],2))
 
         for k in ratios.keys():
-                ratios[k]="{:0.3g}".format(round(ratios[k],3))
+                ratios[k]="{0:g}".format(round(ratios[k],3))
 
         table = Table(title="Résultats : ", title_justify="left")
         table.add_column("/")
@@ -184,5 +169,20 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         console = Console()
         console.print(table)
+
+                #####################################AFFICHAGE CONTRAINTES################################################
+        if bool(param_gene['trac_res']) is True:
+                ax = stress_post.plot_stress_n_zz(nrows=3, ncols=3, figsize=(15, 10), render=False, title="Traction liée à l'effort normal")
+                fig = ax.get_figure()
+                stress_post.plot_stress_mxx_zz(ax=fig.axes[1], title="Flexion liée au moment suivant X")
+                stress_post.plot_stress_myy_zz(ax=fig.axes[2], title="Flexion liée au moment suivant Y")
+                stress_post.plot_stress_vx_zxy(ax=fig.axes[3], title="Cisaillement lié à l'effort suivant X")
+                stress_post.plot_stress_vy_zxy(ax=fig.axes[4], title="Cisaillement lié à l'effort suivant Y")
+                stress_post.plot_stress_mzz_zxy(ax=fig.axes[5], title="Torsion liée au moment suivant Z")
+                stress_post.plot_stress_zz(ax=fig.axes[6], title="Traction tous chargements")
+                stress_post.plot_stress_zxy(ax=fig.axes[7], title="Cisaillement tous chargements")
+                section.plot_centroids(ax=fig.axes[8], title="Géométrie")
+                plt.show()
+
 
         ###########################################FIN##################################################################
