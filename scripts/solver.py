@@ -170,7 +170,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         console = Console()
         console.print(table)
 
-                #####################################AFFICHAGE CONTRAINTES################################################
+        #####################################AFFICHAGE CONTRAINTES################################################
         if bool(param_gene['trac_res']) is True:
                 ax = stress_post.plot_stress_n_zz(nrows=3, ncols=3, figsize=(15, 10), render=False, title="Traction liée à l'effort normal")
                 fig = ax.get_figure()
@@ -184,5 +184,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
                 section.plot_centroids(ax=fig.axes[8], title="Géométrie")
                 plt.show()
 
+        ###########################################RETOUR RATIO MAX######################################################
+        return ratios['MAX']
 
         ###########################################FIN##################################################################

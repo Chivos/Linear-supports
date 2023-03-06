@@ -286,8 +286,15 @@ while True:
         else:
             facteurs = [[1,1,1,1,1,1]]
 
+        ratio_max = 0 #Remise à zéro du dernier ratio max calculé
+        
         for i in range(len(facteurs)):
-            solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[i])
+            ratio = solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[i]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
+            if float(ratio) > float(ratio_max):
+                ratio_max = float(ratio)
+        
+        if (len(facteurs)) > 1: #si on teste plus d'une combinaison de facteurs, on affiche le ratio max
+            print('Ratio maximal calculé :', ratio_max)
 
 
 window.close()
