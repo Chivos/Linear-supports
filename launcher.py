@@ -44,7 +44,7 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
                              [sg.Text('Mx'), sg.Input(0, key='-TORSEUR_MX-', tooltip='N.m', size=(10,1))],
                              [sg.Text('My'), sg.Input(0, key='-TORSEUR_MY-', tooltip='N.m', size=(10,1))],
                              [sg.Text('Mz'), sg.Input(0, key='-TORSEUR_MZ-', tooltip='N.m', size=(10,1))],
-                             [sg.Checkbox('Itérer signes', key='-ITER_SIGNS-')]
+                             [sg.Checkbox('Itérer signes', enable_events=True, key='-ITER_SIGNS-')]
                              ],
                 element_justification='r')
     ],
@@ -127,7 +127,7 @@ col_Tube = [[sg.Text('d, diamètre extérieur'), sg.Input(key='In_TUB_d', size=(
 
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
 
-lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer paramètres de section', key='-PRINT_PARAM-'), sg.Checkbox('Tracer résultats', key='-DRAW_RESULTS-')],
+lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer paramètres de section', key='-PRINT_PARAM-'), sg.Checkbox('Tracer résultats', enable_events=True, key='-DRAW_RESULTS-')],
     [sg.Push(), sg.Button('Quitter'), sg.Button('Calcul')]]
 
 layout = [[sg.Column(col_parametres, element_justification='r'),
@@ -218,7 +218,9 @@ while True:
         window['In_COR_r_r'].update(value=dic_dim_COR[values['-LISTE_COR-']][3])
         window['In_COR_r_t'].update(value=dic_dim_COR[values['-LISTE_COR-']][4])
 
-
+    if event == "-DRAW_RESULTS-"  or event == "-ITER_SIGNS-": #POPUP WARNING pour prévenir d'afficher 64 fois la fenêtre graphique de résultats en contraintes 
+        if values['-ITER_SIGNS-'] == True and values['-DRAW_RESULTS-']==True:
+            sg.Popup('L\'affichage des contraintes et l\'itération des signes sont tous deux activés', title='Attention') 
 
     if event == "Calcul":
         torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
