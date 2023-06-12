@@ -294,7 +294,8 @@ while True:
 
         if nom_profile[0] == "Personnalisé":
             type_profile = "P"
-            param_geom = values['-adresse_dxf-'] #envoi de l'adresse du fichier dxf dans la variable paramètres géométriques
+            param_geom = {'adresse_dxf':values['-adresse_dxf-']} #envoi de l'adresse du fichier dxf dans le dictionnaire paramètres géométriques
+            print('adresse :', param_geom)
             section = solver.calcul_geom("Personnalisé", param_geom, param_gene)
 
         
@@ -305,8 +306,8 @@ while True:
 
         ratio_max = 0 #Remise à zéro du dernier ratio max calculé
         
-        for i in range(len(facteurs)):
-            ratio = solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[i]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
+        for k, v  in enumerate(facteurs):
+            ratio = solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[k]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
             if float(ratio) > float(ratio_max):
                 ratio_max = float(ratio)
         
