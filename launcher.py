@@ -125,7 +125,7 @@ col_Tube = [[sg.Text('d, diamètre extérieur'), sg.Input(key='In_TUB_d', size=(
     [sg.Text('n, nombre de points de discrétisation des cercles'), sg.Input(key='In_TUB_n', size=(5,1))]
     ]
 
-col_Personnalise = [[sg.Text('Adresse fichier dxf :')],
+col_Personnalise = [[sg.Text('Adresse fichier dxf :'), sg.FileBrowse(key='-adresse_dxf-')],
     ]
 
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
@@ -291,6 +291,11 @@ while True:
             type_profile = "T"
             param_geom = {'TUB_d':values['In_TUB_d'], 'TUB_t':values['In_TUB_t'], 'TUB_n':values['In_TUB_n']}
             section = solver.calcul_geom("Tube", param_geom, param_gene)
+
+        if nom_profile[0] == "Personnalisé":
+            type_profile = "P"
+            param_geom = values['-adresse_dxf-'] #envoi de l'adresse du fichier dxf dans la variable paramètres géométriques
+            section = solver.calcul_geom("Personnalisé", param_geom, param_gene)
 
         
         if values['-ITER_SIGNS-'] == True:
