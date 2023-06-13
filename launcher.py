@@ -130,7 +130,8 @@ col_Personnalise = [[sg.Text('Adresse fichier dxf :'), sg.FileBrowse(key='-adres
 
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
 
-lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer paramètres de section', key='-PRINT_PARAM-'), sg.Checkbox('Tracer résultats', enable_events=True, key='-DRAW_RESULTS-')],
+lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer propriétés de section', key='-PRINT_PARAM-', tooltip='Imprimer dans la console les propriétés géométriques et mécaniques calculées'),
+    sg.Checkbox('Tracer résultats', enable_events=True, key='-DRAW_RESULTS-', tooltip='Afficher graphiquement les contraintes calculées')],
     [sg.Push(), sg.Button('Quitter'), sg.Button('Calcul')]]
 
 layout = [[sg.Column(col_parametres, element_justification='r'),
@@ -295,7 +296,6 @@ while True:
         if nom_profile[0] == "Personnalisé":
             type_profile = "P"
             param_geom = {'adresse_dxf':values['-adresse_dxf-']} #envoi de l'adresse du fichier dxf dans le dictionnaire paramètres géométriques
-            print('adresse :', param_geom)
             section = solver.calcul_geom("Personnalisé", param_geom, param_gene)
 
         

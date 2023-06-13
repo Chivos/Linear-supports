@@ -51,7 +51,7 @@ def calcul_geom(profile, param_geom, param_gene):
                 geometry_0 = circular_hollow_section(d=param_geom['TUB_d'], t=param_geom['TUB_t'], n=int(param_geom['TUB_n']))
 
         if profile == "Personnalisé":
-                geometry_0 = Geometry.from_dxf(param_geom)
+                geometry_0 = Geometry.from_dxf(param_geom['adresse_dxf'])
 
         geometry = geometry_0.rotate_section(angle=param_gene['angle']) #sens trigonométrique
         geometry.create_mesh(mesh_sizes=[param_gene['maille']])
