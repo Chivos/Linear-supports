@@ -1,4 +1,5 @@
 from math import pi
+from rich.console import Console
 
 def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CALCUL LIMITES
         if niveau_RCCM in "0AB":
@@ -44,10 +45,14 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
                 print('pour un profilé rectangulaire')
                 limites['Fbx']=r * min(Sy*0.66, Su*0.55) #ZVI2215.2 Flexion
                 limites['Fby']=limites['Fbx']
-
         elif type_profile == "T" :
                 print('pour un tube')
                 limites['Fbx']=r * min(Sy*0.66, Su*0.55) #ZVI2215.2 Flexion
+                limites['Fby']=limites['Fbx']
+        elif type_profile == "P" :
+                console = Console()
+                console.print("pour un profilé personnalisé [red]- VERIFIER LES LIMITES ADMISSIBLES -[/]")
+                limites['Fbx']=r * min(Sy*0.60, Su*0.50) #ZVI2215.6 Flexion
                 limites['Fby']=limites['Fbx']
         
         elancement = K*l/min(r_g)

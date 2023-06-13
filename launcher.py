@@ -25,7 +25,7 @@ def charger_profile(adresse):
     except:
         print('Pas de fichier liste à charger à l\'adresse', adresse)
 
-#Chargement des proprietes de charge profilé
+#Chargement des proprietes géométriques des profilés
 dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE-HE.csv")
 dic_dim_IPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPN.csv")
 dic_dim_UPN = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\UPN.csv")
@@ -33,10 +33,10 @@ dic_dim_UPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\l
 dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\Cornieres.csv")
 
 sg.theme('TanBlue')
-col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='0AB', size=(10, 3), key='-NIVEAU_RCCM-')],
-    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE-HE', 'UPN', 'UPE-UAP', 'Corniere', 'Rectangle', 'Tube'), size=(10, 7), enable_events=True, key="-PROFILE-")],
-    [sg.Text('Longueur'), sg.Input(key='-LONGUEUR-', tooltip='mm', size=(10,1))],
-    [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-', size=(10,1))],
+col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='0AB', size=(11, 3), key='-NIVEAU_RCCM-')],
+    [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE-HE', 'UPN', 'UPE-UAP', 'Corniere', 'Rectangle', 'Tube', 'Personnalisé'), size=(11, 8), enable_events=True, key="-PROFILE-")],
+    [sg.Text('Longueur'), sg.Input(200, key='-LONGUEUR-', tooltip='mm', size=(10,1))],
+    [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-',  tooltip='Valeur enveloppe usuelle : 2', size=(10,1))],
     [sg.Text('Cmx'), sg.Input(1, key='-CMX-', tooltip='Valeur enveloppe : 1', size=(5,1)), sg.Text('Cmy'), sg.Input(1, key='-CMY-', tooltip='Valeur enveloppe : 1', size=(5,1))],
     [sg.Frame('Torseur', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', tooltip='N', size=(10,1))],
                              [sg.Text('Fx'), sg.Input(0, key='-TORSEUR_FX-', tooltip='N', size=(10,1))],
@@ -49,7 +49,7 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
                 element_justification='r')
     ],
     [sg.Frame('Matériau', [[sg.Text('Sy'), sg.Input(235, key='-SY-', tooltip='MPa', size=(5,1))],
-                             [sg.Text('Su'), sg.Input(360, key='-SU-', tooltip='MPa', size=(5,1))],
+                             [sg.Text('Su'), sg.Input(340, key='-SU-', tooltip='MPa', size=(5,1))],
                              [sg.Text('E'), sg.Input(210000, key='-MODULE-', tooltip='MPa', size=(8,1))],
                              ],
                 element_justification='r')
@@ -125,9 +125,13 @@ col_Tube = [[sg.Text('d, diamètre extérieur'), sg.Input(key='In_TUB_d', size=(
     [sg.Text('n, nombre de points de discrétisation des cercles'), sg.Input(key='In_TUB_n', size=(5,1))]
     ]
 
+col_Personnalise = [[sg.Text('Adresse fichier dxf :'), sg.FileBrowse(key='-adresse_dxf-', button_text = "Parcourir", file_types=(('DXF', '*.dxf'),) )],
+    ]
+
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
 
-lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer paramètres de section', key='-PRINT_PARAM-'), sg.Checkbox('Tracer résultats', enable_events=True, key='-DRAW_RESULTS-')],
+lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer propriétés de section', key='-PRINT_PARAM-', tooltip='Imprimer dans la console les propriétés géométriques et mécaniques calculées'),
+    sg.Checkbox('Tracer résultats', enable_events=True, key='-DRAW_RESULTS-', tooltip='Afficher graphiquement les contraintes calculées')],
     [sg.Push(), sg.Button('Quitter'), sg.Button('Calcul')]]
 
 layout = [[sg.Column(col_parametres, element_justification='r'),
@@ -139,7 +143,8 @@ layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.Column(col_UPE, element_justification='r', visible=False, key='col_UPE'),
         sg.Column(col_Corniere, element_justification='r', visible=False, key='col_Corniere'),
         sg.Column(col_Rectangle, element_justification='r', visible=False, key='col_Rectangle'),
-        sg.Column(col_Tube, element_justification='r', visible=False, key='col_Tube')
+        sg.Column(col_Tube, element_justification='r', visible=False, key='col_Tube'),
+        sg.Column(col_Personnalise, element_justification='r', visible=False, key='col_Personnalise')
         ],
         lig_Cal]
 
@@ -152,7 +157,10 @@ while True:
     if event == "-PROFILE-":  # un profilé a été selectionné
         nom_profile = values["-PROFILE-"]
         adresse_image = os.path.dirname(os.path.realpath(__file__)) + "\\images\\" + nom_profile[0] +".png"
-        window['-IMAGEPROFILE-'].update(adresse_image)
+        try:
+            window['-IMAGEPROFILE-'].update(adresse_image)
+        except:
+            pass
 
         #Effacer les colonnes éventuellement affichées lors d'une sélection
         window['col_IPE'].update(visible=False)
@@ -162,6 +170,7 @@ while True:
         window['col_Corniere'].update(visible=False)
         window['col_Rectangle'].update(visible=False)
         window['col_Tube'].update(visible=False)
+        window['col_Personnalise'].update(visible=False)
 
         #Afficher colonnes en fonction de la section
         if nom_profile[0] == "IPN":
@@ -178,6 +187,8 @@ while True:
             window['col_Rectangle'].update(visible=True)
         if nom_profile[0] == "Tube":
             window['col_Tube'].update(visible=True)
+        if nom_profile[0] == "Personnalisé":
+            window['col_Personnalise'].update(visible=True)
 
     if event == "-LISTE_IPN-":
         window['In_IPN_d'].update(value=dic_dim_IPN[values['-LISTE_IPN-']][0])
@@ -228,7 +239,7 @@ while True:
 
         for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
             try:
-                torseur[key]=float(value)
+                torseur[key]=float(value.replace("," , "."))
             except:
                 torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
 
@@ -282,6 +293,11 @@ while True:
             param_geom = {'TUB_d':values['In_TUB_d'], 'TUB_t':values['In_TUB_t'], 'TUB_n':values['In_TUB_n']}
             section = solver.calcul_geom("Tube", param_geom, param_gene)
 
+        if nom_profile[0] == "Personnalisé":
+            type_profile = "P"
+            param_geom = {'adresse_dxf':values['-adresse_dxf-']} #envoi de l'adresse du fichier dxf dans le dictionnaire paramètres géométriques
+            section = solver.calcul_geom("Personnalisé", param_geom, param_gene)
+
         
         if values['-ITER_SIGNS-'] == True:
             facteurs = list(product([1, -1], repeat=6))
@@ -290,8 +306,8 @@ while True:
 
         ratio_max = 0 #Remise à zéro du dernier ratio max calculé
         
-        for i in range(len(facteurs)):
-            ratio = solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[i]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
+        for k, v  in enumerate(facteurs):
+            ratio = solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[k]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
             if float(ratio) > float(ratio_max):
                 ratio_max = float(ratio)
         

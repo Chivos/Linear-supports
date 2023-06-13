@@ -6,6 +6,11 @@ from sectionproperties.pre.library.steel_sections import tapered_flange_i_sectio
 from sectionproperties.pre.library.steel_sections import rectangular_hollow_section #Carré, rectangle
 from sectionproperties.pre.library.steel_sections import angle_section #Cornière
 from sectionproperties.pre.library.steel_sections import circular_hollow_section #Tube
+
+from sectionproperties.pre.geometry import Geometry
+from sectionproperties.pre.geometry import CompoundGeometry
+from sectionproperties.analysis.section import Section
+
 from sectionproperties.analysis.section import Section
 import matplotlib.pyplot as plt
 from rich.console import Console
@@ -44,6 +49,9 @@ def calcul_geom(profile, param_geom, param_gene):
 
         if profile == "Tube":
                 geometry_0 = circular_hollow_section(d=param_geom['TUB_d'], t=param_geom['TUB_t'], n=int(param_geom['TUB_n']))
+
+        if profile == "Personnalisé":
+                geometry_0 = Geometry.from_dxf(param_geom['adresse_dxf'])
 
         geometry = geometry_0.rotate_section(angle=param_gene['angle']) #sens trigonométrique
         geometry.create_mesh(mesh_sizes=[param_gene['maille']])
