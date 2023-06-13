@@ -51,7 +51,7 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
                 limites['Fby']=limites['Fbx']
         elif type_profile == "P" :
                 console = Console()
-                Console.print("pour un profilé personnalisé" + "[red] - VERIFIER LES LIMITES ADMISSIBLES -[/red]")
+                console.print("pour un profilé personnalisé [red]- VERIFIER LES LIMITES ADMISSIBLES -[/]")
                 limites['Fbx']=r * min(Sy*0.60, Su*0.50) #ZVI2215.6 Flexion
                 limites['Fby']=limites['Fbx']
         

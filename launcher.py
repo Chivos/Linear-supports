@@ -35,7 +35,7 @@ dic_dim_COR = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\l
 sg.theme('TanBlue')
 col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), default_values='0AB', size=(11, 3), key='-NIVEAU_RCCM-')],
     [sg.Text('Type profilé'), sg.Listbox(values=('IPN', 'IPE-HE', 'UPN', 'UPE-UAP', 'Corniere', 'Rectangle', 'Tube', 'Personnalisé'), size=(11, 8), enable_events=True, key="-PROFILE-")],
-    [sg.Text('Longueur'), sg.Input(key='-LONGUEUR-', tooltip='mm', size=(10,1))],
+    [sg.Text('Longueur'), sg.Input(200, key='-LONGUEUR-', tooltip='mm', size=(10,1))],
     [sg.Text('Coefficient de longueur K'), sg.Input(2, key='-KLONGUEUR-',  tooltip='Valeur enveloppe usuelle : 2', size=(10,1))],
     [sg.Text('Cmx'), sg.Input(1, key='-CMX-', tooltip='Valeur enveloppe : 1', size=(5,1)), sg.Text('Cmy'), sg.Input(1, key='-CMY-', tooltip='Valeur enveloppe : 1', size=(5,1))],
     [sg.Frame('Torseur', [[sg.Text('N'), sg.Input(0, key='-TORSEUR_N-', tooltip='N', size=(10,1))],
