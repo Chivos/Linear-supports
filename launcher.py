@@ -125,7 +125,7 @@ col_Tube = [[sg.Text('d, diamètre extérieur'), sg.Input(key='In_TUB_d', size=(
     [sg.Text('n, nombre de points de discrétisation des cercles'), sg.Input(key='In_TUB_n', size=(5,1))]
     ]
 
-col_Personnalise = [[sg.Text('Adresse fichier dxf :'), sg.FileBrowse(key='-adresse_dxf-')],
+col_Personnalise = [[sg.Text('Adresse fichier dxf :'), sg.FileBrowse(key='-adresse_dxf-', button_text = "Parcourir", file_types=(('DXF', '*.dxf'),) )],
     ]
 
 #############################FIN COLONNES SPECIFIQUES AU CHOIX DU PROFILE##########################
