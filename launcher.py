@@ -44,7 +44,9 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
                              [sg.Text('Mx'), sg.Input(0, key='-TORSEUR_MX-', tooltip='N.m', size=(10,1))],
                              [sg.Text('My'), sg.Input(0, key='-TORSEUR_MY-', tooltip='N.m', size=(10,1))],
                              [sg.Text('Mz'), sg.Input(0, key='-TORSEUR_MZ-', tooltip='N.m', size=(10,1))],
-                             [sg.Checkbox('Itérer signes', enable_events=True, key='-ITER_SIGNS-')]
+                             [sg.Checkbox('Itérer signes', enable_events=True, key='-ITER_SIGNS-')],
+                             [sg.Checkbox('Torseur depuis liste', enable_events=True, key='-LISTE_TORSEUR-')],
+                             [sg.FileBrowse(key='-adresse_torseur-', button_text = "Parcourir", disabled=True)]
                              ],
                 element_justification='r')
     ],
@@ -134,6 +136,8 @@ lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer propriétés de section', key='-PRI
     sg.Checkbox('Tracer résultats', enable_events=True, key='-DRAW_RESULTS-', tooltip='Afficher graphiquement les contraintes calculées')],
     [sg.Push(), sg.Button('Quitter'), sg.Button('Calcul')]]
 
+#########################################CREATION FENETRE####################################
+
 layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.VSeperator(),
         sg.Column(col_image, element_justification='r'),
@@ -149,6 +153,8 @@ layout = [[sg.Column(col_parametres, element_justification='r'),
         lig_Cal]
 
 window = sg.Window('Dépouillement supports linéaires RCCM ZVI', layout, default_element_size=(40, 1), grab_anywhere=False, resizable=True)
+
+##################################BOUCLE ATTENTE############################################
 
 while True:
     event, values = window.read()
@@ -233,16 +239,25 @@ while True:
         if values['-ITER_SIGNS-'] == True and values['-DRAW_RESULTS-']==True:
             sg.Popup('L\'affichage des contraintes et l\'itération des signes sont tous deux activés', title='Attention') 
 
+    if event == "-LISTE_TORSEUR-":
+        if values['-LISTE_TORSEUR-'] == True:
+            window['-TORSEUR_N-'].update(disabled=True)
+            window['-TORSEUR_FX-'].update(disabled=True)
+            window['-TORSEUR_FY-'].update(disabled=True)
+            window['-TORSEUR_MX-'].update(disabled=True)
+            window['-TORSEUR_MY-'].update(disabled=True)
+            window['-TORSEUR_MZ-'].update(disabled=True)
+            window['-adresse_torseur-'].update(disabled=False)
+        else:
+            window['-TORSEUR_N-'].update(disabled=False)
+            window['-TORSEUR_FX-'].update(disabled=False)
+            window['-TORSEUR_FY-'].update(disabled=False)
+            window['-TORSEUR_MX-'].update(disabled=False)
+            window['-TORSEUR_MY-'].update(disabled=False)
+            window['-TORSEUR_MZ-'].update(disabled=False)
+            window['-adresse_torseur-'].update(disabled=True)
+
     if event == "Calcul":
-        torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
-            'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
-
-        for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
-            try:
-                torseur[key]=float(value.replace("," , "."))
-            except:
-                torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
-
         param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'],
             'cmx':values['-CMX-'], 'cmy':values['-CMY-'], 'angle':values['-ANGLEROT-'],
             'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-'], 'impr_res':values['-PRINT_PARAM-'], 'trac_res':values['-DRAW_RESULTS-']}
@@ -298,6 +313,14 @@ while True:
             param_geom = {'adresse_dxf':values['-adresse_dxf-']} #envoi de l'adresse du fichier dxf dans le dictionnaire paramètres géométriques
             section = solver.calcul_geom("Personnalisé", param_geom, param_gene)
 
+        torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
+            'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
+
+        for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
+            try:
+                torseur[key]=float(value.replace("," , ".")) #gerer les decimaux exprimés avec des . ou de ,
+            except:
+                torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
         
         if values['-ITER_SIGNS-'] == True:
             facteurs = list(product([1, -1], repeat=6))
