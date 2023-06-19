@@ -7,23 +7,29 @@ from itertools import product
 
 def charger_profile(adresse):
     try:
-        dic_dim = {}
         with open(adresse, 'r') as file:
             csvreader = csv.reader(file,  delimiter=';')
-            column_count = len(next(csvreader))
+            column_count = len(next(csvreader)) #calcul du nombre de colonnes (nombres de paramètres à stocker pour chaque profilé)
 
-            dic_dim = {}
-            for row in csvreader:
-
-                new_key = row[0]
-                dic_dim[new_key] = []
-                
-                for column in range(column_count-1):
-                    dic_dim[new_key].append(row[column+1])
+            dic_dim = {} #création dictionnaire des dimensions
+            for row in csvreader: #pour chaque ligne du csv
+                new_key = row[0] #on récupère la valeur de la première colonne qui est le nom du profilé
+                dic_dim[new_key] = [] #et on créé une liste qui va contenir les autres colonnes des valeurs
+                for column in range(column_count-1): #on ajoute à la liste spécifique à chaque profilé un paramètre dimensionnel (colonne)
+                    dic_dim[new_key].append(row[column+1]) 
 
         return(dic_dim)
     except:
         print('Pas de fichier liste à charger à l\'adresse', adresse)
+
+def charger_torseur(adresse):
+    torseur = {}
+    with open(adresse, 'r') as file:
+        csvreader = csv.reader(file,  delimiter=';')
+        row_count = sum(1 for row in csv_reader) #nombre de lignes (torseurs) à charger
+
+
+    return(torseur)
 
 #Chargement des proprietes géométriques des profilés
 dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE-HE.csv")
@@ -313,14 +319,18 @@ while True:
             param_geom = {'adresse_dxf':values['-adresse_dxf-']} #envoi de l'adresse du fichier dxf dans le dictionnaire paramètres géométriques
             section = solver.calcul_geom("Personnalisé", param_geom, param_gene)
 
-        torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
-            'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
+        #Chargement torseur
+        if values['-LISTE_TORSEUR-'] == False:
+            torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
+                'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
 
-        for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
-            try:
-                torseur[key]=float(value.replace("," , ".")) #gerer les decimaux exprimés avec des . ou de ,
-            except:
-                torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
+            for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
+                try:
+                    torseur[key]=float(value.replace("," , ".")) #gerer les decimaux exprimés avec des . ou de ,
+                except:
+                    torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
+        else:
+            torseur = charger_torseur(values['-adresse_torseur-'])
         
         if values['-ITER_SIGNS-'] == True:
             facteurs = list(product([1, -1], repeat=6))
