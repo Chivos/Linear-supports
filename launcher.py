@@ -23,12 +23,16 @@ def charger_profile(adresse):
         print('Pas de fichier liste à charger à l\'adresse', adresse)
 
 def charger_torseur(adresse):
-    torseur = {}
-    with open(adresse, 'r') as file:
+    torseur = [] #création list
+    with open(adresse, 'r', encoding="utf-8-sig") as file:
         csvreader = csv.reader(file,  delimiter=';')
-        row_count = sum(1 for row in csv_reader) #nombre de lignes (torseurs) à charger
+        #row_count = sum(1 for row in csv_reader) #nombre de lignes (torseurs) à charger
 
-
+        for row in csvreader: #pour chaque ligne du csv
+                torseur_ligne = {'N':row[0], 'Fx':row[1], 'Fy':row[2], 'Mx':row[3], 'My':row[4], 'Mz':row[5]}
+                for k,v in torseur_ligne.items
+                torseur.append(torseur_ligne) 
+    print(type( torseur[0]['N'] ))
     return(torseur)
 
 #Chargement des proprietes géométriques des profilés
