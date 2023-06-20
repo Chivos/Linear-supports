@@ -326,7 +326,7 @@ while True:
 
             for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
                 try:
-                    torseur[key]=float(value.replace("," , ".")) #gérer les decimaux exprimés avec des . ou de , et enregistrer en liste
+                    torseur[key]=float(value.replace("," , ".")) #gérer les decimaux exprimés avec des . ou de ,
                 except:
                     torseur[key]=(0.0) #si cellule du torseur vide, mettre 0 pour éviter de garder un string
             torseur = [torseur]#conversion en liste de dictionnaire de torseurs
