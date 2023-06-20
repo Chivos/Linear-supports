@@ -326,11 +326,14 @@ while True:
 
             for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
                 try:
-                    torseur[key]=float(value.replace("," , ".")) #gerer les decimaux exprimés avec des . ou de ,
+                    torseur[key]=float(value.replace("," , ".")) #gérer les decimaux exprimés avec des . ou de , et enregistrer en liste
                 except:
-                    torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
+                    torseur[key]=(0.0) #si cellule du torseur vide, mettre 0 pour éviter de garder un string
+            torseur = [torseur]#conversion en liste de dictionnaire de torseurs
         else:
             torseur = charger_torseur(values['-adresse_torseur-'])
+
+        nb_torseurs = len(torseur) #nombre de torseurs différents à calculer
         
         if values['-ITER_SIGNS-'] == True:
             facteurs = list(product([1, -1], repeat=6))
@@ -339,12 +342,13 @@ while True:
 
         ratio_max = 0 #Remise à zéro du dernier ratio max calculé
         
-        for k, v  in enumerate(facteurs):
-            ratio = solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[k]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
-            if float(ratio) > float(ratio_max):
-                ratio_max = float(ratio)
+        for i in range(nb_torseurs):
+            for k, v  in enumerate(facteurs):
+                ratio = solver.calcul_contraintes(section, torseur[i], param_gene, type_profile, facteurs[k]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
+                if float(ratio) > float(ratio_max):
+                    ratio_max = float(ratio)
         
-        if (len(facteurs)) > 1: #si on teste plus d'une combinaison de facteurs, on affiche le ratio max
+        if (len(facteurs) * nb_torseurs) > 1: #si on teste plus d'une combinaison de facteurs ou de torseurs, on affiche le ratio max
             print('Ratio maximal calculé :', ratio_max)
 
 
