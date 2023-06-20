@@ -30,9 +30,7 @@ def charger_torseur(adresse):
 
         for row in csvreader: #pour chaque ligne du csv
                 torseur_ligne = {'N':row[0], 'Fx':row[1], 'Fy':row[2], 'Mx':row[3], 'My':row[4], 'Mz':row[5]}
-                for k,v in torseur_ligne.items
                 torseur.append(torseur_ligne) 
-    print(type( torseur[0]['N'] ))
     return(torseur)
 
 #Chargement des proprietes géométriques des profilés
@@ -327,17 +325,18 @@ while True:
         if values['-LISTE_TORSEUR-'] == False:
             torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
                 'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
-
-            for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
-                try:
-                    torseur[key]=float(value.replace("," , ".")) #gérer les decimaux exprimés avec des . ou de ,
-                except:
-                    torseur[key]=(0.0) #si cellule du torseur vide, mettre 0 pour éviter de garder un string
             torseur = [torseur]#conversion en liste de dictionnaire de torseurs
         else:
             torseur = charger_torseur(values['-adresse_torseur-'])
 
         nb_torseurs = len(torseur) #nombre de torseurs différents à calculer
+        
+        for index, torseur_i in enumerate(torseur):  ###Transformation string en float pour entrée dans sectionproperties
+            for key, value in torseur_i.items():
+                try:
+                    torseur[index][key]=float(value.replace("," , ".")) #gérer les decimaux exprimés avec des . ou de ,
+                except:
+                    torseur[index][key] #si cellule du torseur vide, mettre 0 pour éviter de garder un string
         
         if values['-ITER_SIGNS-'] == True:
             facteurs = list(product([1, -1], repeat=6))
