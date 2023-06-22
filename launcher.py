@@ -243,9 +243,9 @@ while True:
         window['In_COR_r_r'].update(value=dic_dim_COR[values['-LISTE_COR-']][3])
         window['In_COR_r_t'].update(value=dic_dim_COR[values['-LISTE_COR-']][4])
 
-    if event == "-DRAW_RESULTS-"  or event == "-ITER_SIGNS-": #POPUP WARNING pour prévenir d'afficher 64 fois la fenêtre graphique de résultats en contraintes 
-        if values['-ITER_SIGNS-'] == True and values['-DRAW_RESULTS-']==True:
-            sg.Popup('L\'affichage des contraintes et l\'itération des signes sont tous deux activés', title='Attention') 
+    if event == "-DRAW_RESULTS-"  or event == "-ITER_SIGNS-" or event=='-LISTE_TORSEUR-': #POPUP WARNING pour prévenir d'afficher 64 fois la fenêtre graphique de résultats en contraintes 
+        if (values['-ITER_SIGNS-'] == True or values['-LISTE_TORSEUR-'] == True) and values['-DRAW_RESULTS-']==True:
+            sg.Popup('L\'affichage des contraintes est activée pour une série de calculs (itération des signes ou liste de torseurs)', title='Attention') 
 
     if event == "-LISTE_TORSEUR-":
         if values['-LISTE_TORSEUR-'] == True:
