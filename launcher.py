@@ -3,7 +3,7 @@ import PySimpleGUI as sg
 import csv
 from scripts import solver
 from itertools import product
-
+from rich.console import Console
 
 def charger_profile(adresse):
     try:
@@ -349,10 +349,14 @@ while True:
             for k, v  in enumerate(facteurs):
                 ratio = solver.calcul_contraintes(section, torseur[i], param_gene, type_profile, facteurs[k]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
                 if float(ratio) > float(ratio_max):
-                    ratio_max = float(ratio)
+                    ratio_max = ratio
         
         if (len(facteurs) * nb_torseurs) > 1: #si on teste plus d'une combinaison de facteurs ou de torseurs, on affiche le ratio max
-            print('Ratio maximal calculé :', ratio_max)
+            console = Console()
+            if float(ratio_max) > 1:
+                console.print("Ratio maximal calculé : [red]"+ratio_max+"[/]")
+            else:
+                console.print("Ratio maximal calculé : [green]"+ratio_max+"[/]")
 
 
 window.close()
