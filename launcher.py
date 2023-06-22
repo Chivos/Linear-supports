@@ -54,7 +54,7 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
                              [sg.Text('Mz'), sg.Input(0, key='-TORSEUR_MZ-', tooltip='N.m', size=(10,1))],
                              [sg.Checkbox('Itérer signes', enable_events=True, key='-ITER_SIGNS-')],
                              [sg.Checkbox('Torseur depuis liste', enable_events=True, key='-LISTE_TORSEUR-')],
-                             [sg.FileBrowse(key='-adresse_torseur-', button_text = "Parcourir", disabled=True)]
+                             [sg.Text(''), sg.FileBrowse(key='-adresse_torseur-', button_text = "Parcourir", disabled=True, file_types=(('CSV', '*.csv'),))]
                              ],
                 element_justification='r')
     ],
