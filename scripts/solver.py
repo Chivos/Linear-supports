@@ -114,6 +114,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         contraintes['fbx']=contraintes['fbx_min'] if abs(contraintes['fbx_min'])>contraintes['fbx_max'] else contraintes['fbx_max']
         contraintes['fby']=contraintes['fby_min'] if abs(contraintes['fby_min'])>contraintes['fby_max'] else contraintes['fby_max']
+        contraintes['fb']=contraintes['fb_min'] if abs(contraintes['fb_min'])>contraintes['fb_max'] else contraintes['fb_max'] #pour profilés sans symétrie
 
 
         #################################################CALCUL LIMITES###############################################
@@ -153,6 +154,8 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         #Flexion
         table.add_row("fbx", contraintes['fbx'], "Fbx", limites['Fbx'], ratios['F_2215_x'], "Flexion ZVI2215")
         table.add_row("fby", contraintes['fby'], "Fby", limites['Fby'], ratios['F_2215_y'], "Flexion ZVI2215")
+        if abs(ixy_c) > 2e-6 :
+                table.add_row("fb", contraintes['fb'], "Fb", limites['Fb'], ratios['F_2215'], "Flexion totale ZVI2215")
 
         table.add_section()
 
@@ -166,6 +169,8 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         
         #Combinaison traction et flexion
         table.add_row("(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2")
+        if abs(ixy_c) > 2e-6 :
+                table.add_row("(21)", "", "", "", ratios['SC_2216.2_21_asym'], "Traction et flexion profilés sans symétrie ZVI2216.2")
 
         table.add_section()
 
