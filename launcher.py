@@ -3,27 +3,35 @@ import PySimpleGUI as sg
 import csv
 from scripts import solver
 from itertools import product
-
+from rich.console import Console
 
 def charger_profile(adresse):
     try:
-        dic_dim = {}
         with open(adresse, 'r') as file:
             csvreader = csv.reader(file,  delimiter=';')
-            column_count = len(next(csvreader))
+            column_count = len(next(csvreader)) #calcul du nombre de colonnes (nombres de paramètres à stocker pour chaque profilé)
 
-            dic_dim = {}
-            for row in csvreader:
-
-                new_key = row[0]
-                dic_dim[new_key] = []
-                
-                for column in range(column_count-1):
-                    dic_dim[new_key].append(row[column+1])
+            dic_dim = {} #création dictionnaire des dimensions
+            for row in csvreader: #pour chaque ligne du csv
+                new_key = row[0] #on récupère la valeur de la première colonne qui est le nom du profilé
+                dic_dim[new_key] = [] #et on créé une liste qui va contenir les autres colonnes des valeurs
+                for column in range(column_count-1): #on ajoute à la liste spécifique à chaque profilé un paramètre dimensionnel (colonne)
+                    dic_dim[new_key].append(row[column+1]) 
 
         return(dic_dim)
     except:
         print('Pas de fichier liste à charger à l\'adresse', adresse)
+
+def charger_torseur(adresse):
+    torseur = [] #création list
+    with open(adresse, 'r', encoding="utf-8-sig") as file:
+        csvreader = csv.reader(file,  delimiter=';')
+        #row_count = sum(1 for row in csv_reader) #nombre de lignes (torseurs) à charger
+
+        for row in csvreader: #pour chaque ligne du csv
+                torseur_ligne = {'N':row[0], 'Fx':row[1], 'Fy':row[2], 'Mx':row[3], 'My':row[4], 'Mz':row[5]}
+                torseur.append(torseur_ligne) 
+    return(torseur)
 
 #Chargement des proprietes géométriques des profilés
 dic_dim_IPE = charger_profile(os.path.dirname(os.path.realpath(__file__)) + "\\liste_profiles\\IPE-HE.csv")
@@ -44,7 +52,9 @@ col_parametres = [[sg.Text('Niveau RCCM'), sg.Listbox(values=('0AB', 'C', 'D'), 
                              [sg.Text('Mx'), sg.Input(0, key='-TORSEUR_MX-', tooltip='N.m', size=(10,1))],
                              [sg.Text('My'), sg.Input(0, key='-TORSEUR_MY-', tooltip='N.m', size=(10,1))],
                              [sg.Text('Mz'), sg.Input(0, key='-TORSEUR_MZ-', tooltip='N.m', size=(10,1))],
-                             [sg.Checkbox('Itérer signes', enable_events=True, key='-ITER_SIGNS-')]
+                             [sg.Checkbox('Itérer signes', enable_events=True, key='-ITER_SIGNS-')],
+                             [sg.Checkbox('Torseur depuis liste', enable_events=True, key='-LISTE_TORSEUR-')],
+                             [sg.Text(''), sg.FileBrowse(key='-adresse_torseur-', button_text = "Parcourir", disabled=True, file_types=(('CSV', '*.csv'),))]
                              ],
                 element_justification='r')
     ],
@@ -134,6 +144,8 @@ lig_Cal = [[sg.Push(), sg.Checkbox('Imprimer propriétés de section', key='-PRI
     sg.Checkbox('Tracer résultats', enable_events=True, key='-DRAW_RESULTS-', tooltip='Afficher graphiquement les contraintes calculées')],
     [sg.Push(), sg.Button('Quitter'), sg.Button('Calcul')]]
 
+#########################################CREATION FENETRE####################################
+
 layout = [[sg.Column(col_parametres, element_justification='r'),
         sg.VSeperator(),
         sg.Column(col_image, element_justification='r'),
@@ -149,6 +161,8 @@ layout = [[sg.Column(col_parametres, element_justification='r'),
         lig_Cal]
 
 window = sg.Window('Dépouillement supports linéaires RCCM ZVI', layout, default_element_size=(40, 1), grab_anywhere=False, resizable=True)
+
+##################################BOUCLE ATTENTE############################################
 
 while True:
     event, values = window.read()
@@ -229,20 +243,29 @@ while True:
         window['In_COR_r_r'].update(value=dic_dim_COR[values['-LISTE_COR-']][3])
         window['In_COR_r_t'].update(value=dic_dim_COR[values['-LISTE_COR-']][4])
 
-    if event == "-DRAW_RESULTS-"  or event == "-ITER_SIGNS-": #POPUP WARNING pour prévenir d'afficher 64 fois la fenêtre graphique de résultats en contraintes 
-        if values['-ITER_SIGNS-'] == True and values['-DRAW_RESULTS-']==True:
-            sg.Popup('L\'affichage des contraintes et l\'itération des signes sont tous deux activés', title='Attention') 
+    if event == "-DRAW_RESULTS-"  or event == "-ITER_SIGNS-" or event=='-LISTE_TORSEUR-': #POPUP WARNING pour prévenir d'afficher 64 fois la fenêtre graphique de résultats en contraintes 
+        if (values['-ITER_SIGNS-'] == True or values['-LISTE_TORSEUR-'] == True) and values['-DRAW_RESULTS-']==True:
+            sg.Popup('L\'affichage des contraintes est activée pour une série de calculs (itération des signes ou liste de torseurs)', title='Attention') 
+
+    if event == "-LISTE_TORSEUR-":
+        if values['-LISTE_TORSEUR-'] == True:
+            window['-TORSEUR_N-'].update(disabled=True)
+            window['-TORSEUR_FX-'].update(disabled=True)
+            window['-TORSEUR_FY-'].update(disabled=True)
+            window['-TORSEUR_MX-'].update(disabled=True)
+            window['-TORSEUR_MY-'].update(disabled=True)
+            window['-TORSEUR_MZ-'].update(disabled=True)
+            window['-adresse_torseur-'].update(disabled=False)
+        else:
+            window['-TORSEUR_N-'].update(disabled=False)
+            window['-TORSEUR_FX-'].update(disabled=False)
+            window['-TORSEUR_FY-'].update(disabled=False)
+            window['-TORSEUR_MX-'].update(disabled=False)
+            window['-TORSEUR_MY-'].update(disabled=False)
+            window['-TORSEUR_MZ-'].update(disabled=False)
+            window['-adresse_torseur-'].update(disabled=True)
 
     if event == "Calcul":
-        torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
-            'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
-
-        for key, value in torseur.items(): ###Transformation string en float pour entrée dans sectionproperties
-            try:
-                torseur[key]=float(value.replace("," , "."))
-            except:
-                torseur[key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
-
         param_gene = {'niveau_RCCM':values['-NIVEAU_RCCM-'][0] ,'maille':values['-MESH_SIZE-'], 'L':values['-LONGUEUR-'], 'K':values['-KLONGUEUR-'],
             'cmx':values['-CMX-'], 'cmy':values['-CMY-'], 'angle':values['-ANGLEROT-'],
             'Sy':values['-SY-'], 'Su':values['-SU-'], 'E':values['-MODULE-'], 'impr_res':values['-PRINT_PARAM-'], 'trac_res':values['-DRAW_RESULTS-']}
@@ -298,6 +321,22 @@ while True:
             param_geom = {'adresse_dxf':values['-adresse_dxf-']} #envoi de l'adresse du fichier dxf dans le dictionnaire paramètres géométriques
             section = solver.calcul_geom("Personnalisé", param_geom, param_gene)
 
+        #Chargement torseur
+        if values['-LISTE_TORSEUR-'] == False:
+            torseur = {'N':values['-TORSEUR_N-'], 'Fx':values['-TORSEUR_FX-'], 'Fy':values['-TORSEUR_FY-'],
+                'Mx':values['-TORSEUR_MX-'], 'My':values['-TORSEUR_MY-'], 'Mz':values['-TORSEUR_MZ-']}
+            torseur = [torseur]#conversion en liste de dictionnaire de torseurs
+        else:
+            torseur = charger_torseur(values['-adresse_torseur-'])
+
+        nb_torseurs = len(torseur) #nombre de torseurs différents à calculer
+        
+        for index, torseur_i in enumerate(torseur):  ###Transformation string en float pour entrée dans sectionproperties
+            for key, value in torseur_i.items():
+                try:
+                    torseur[index][key]=float(value.replace("," , ".")) #gérer les decimaux exprimés avec des . ou de ,
+                except:
+                    torseur[index][key] #si cellule du torseur vide, mettre 0 pour éviter de garder un string
         
         if values['-ITER_SIGNS-'] == True:
             facteurs = list(product([1, -1], repeat=6))
@@ -306,13 +345,18 @@ while True:
 
         ratio_max = 0 #Remise à zéro du dernier ratio max calculé
         
-        for k, v  in enumerate(facteurs):
-            ratio = solver.calcul_contraintes(section, torseur, param_gene, type_profile, facteurs[k]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
-            if float(ratio) > float(ratio_max):
-                ratio_max = float(ratio)
+        for i in range(nb_torseurs):
+            for k, v  in enumerate(facteurs):
+                ratio = solver.calcul_contraintes(section, torseur[i], param_gene, type_profile, facteurs[k]) #Lance le calcul des contraintes, affiche la table et récupère le ratio max
+                if float(ratio) > float(ratio_max):
+                    ratio_max = ratio
         
-        if (len(facteurs)) > 1: #si on teste plus d'une combinaison de facteurs, on affiche le ratio max
-            print('Ratio maximal calculé :', ratio_max)
+        if (len(facteurs) * nb_torseurs) > 1: #si on teste plus d'une combinaison de facteurs ou de torseurs, on affiche le ratio max
+            console = Console()
+            if float(ratio_max) > 1:
+                console.print("Ratio maximal calculé : [red]"+ratio_max+"[/]")
+            else:
+                console.print("Ratio maximal calculé : [green]"+ratio_max+"[/]")
 
 
 window.close()
