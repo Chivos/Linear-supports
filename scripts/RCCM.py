@@ -1,7 +1,7 @@
 from math import pi
 from rich.console import Console
 
-def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CALCUL LIMITES
+def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E, profile_asym): #CALCUL LIMITES
         if niveau_RCCM in "0AB":
                 r=1
                 print('Dépouillement pour un niveau 0AB', end=", ")
@@ -54,6 +54,7 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
                 console.print("pour un profilé personnalisé [red]- VERIFIER LES LIMITES ADMISSIBLES -[/]")
                 limites['Fbx']=r * min(Sy*0.60, Su*0.50) #ZVI2215.6 Flexion
                 limites['Fby']=limites['Fbx']
+        limites['Fb']=min(limites['Fbx'], limites['Fby']) #pour profilés sans axes de symétrie
         
         elancement = K*l/min(r_g)
         Cc=((2*pi**2*E)/Sy)**0.5
@@ -66,7 +67,7 @@ def criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E): #CA
         return limites
 
 
-def ratios(contraintes, limites, E, K, l, r_g, cmx, cmy):
+def ratios(contraintes, limites, E, K, l, r_g, cmx, cmy, profile_asym):
         
         for k, v in contraintes.items(): #Crée variables à partir du dictionnaire, pour facilier la lecture des formules ci-après
                 globals()[k] = v #exemple : fa = contraintes['fa']
@@ -74,25 +75,46 @@ def ratios(contraintes, limites, E, K, l, r_g, cmx, cmy):
                 globals()[k] = v
 
         ratios = {}
+        #Traction
         ratios['T_2212'] = abs(fa/Ft) if fa>0 else 0
+        #Compression
         ratios['C_2214'] = abs(fa/Fa) if fa<0 else 0
+        #Cisaillement
         ratios['S_2213'] = abs(fv/Fv) #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
-        ratios['F_2215_x']= abs(fbx/Fbx)
-        ratios['F_2215_y']= abs(fby/Fby)
+        #Flexion
+        if profile_asym == False:
+                ratios['F_2215_x'] = abs(fbx/Fbx)
+                ratios['F_2215_y'] = abs(fby/Fby)
+        elif profile_asym == True:
+                ratios['F_2215'] = abs(fb/Fb) #ajout pour profilés sans axes de symétrie
 
+        # Flexion et compression
         if (fa/Fa) >= -0.15: #Permet de traiter la compression (petite valeurs négatives) et la traction dans le même if
                 if fa < 0:
-                        ratios['SC_2216.1_22'] = abs(fa/Fa + fbx_min/Fbx + fby_min/Fby)
+                        if profile_asym == False:
+                                ratios['SC_2216.1_22'] = abs(fa/Fa + fbx_min/Fbx + fby_min/Fby)
+                        elif profile_asym == True:
+                                ratios['SC_2216.1_22'] = abs(fa/Fa + fb_min/Fb) #pour profilés sans axes de symétrie
                 else:
-                        ratios['SC_2216.1_22'] = abs(fbx_min/Fbx + fby_min/Fby)  #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
-        else:
+                        if profile_asym == False:
+                                ratios['SC_2216.1_22'] = abs(fbx_min/Fbx + fby_min/Fby)  #RSTAB semble ne pas considérer fa/Fa si cela va dans le sens opposé (si traction, le critère de compression n'est vérifié qu'avec la flexion)
+                        elif profile_asym == True :
+                                ratios['SC_2216.1_22'] = abs(fb_min/Fb) #pour profilés sans axes de symétrie
+        else: #Valeur de compression axiale importante
                 Fpex = (12*pi**2*E)/(23*(K*l/r_g[0])**2)
                 Fpey = (12*pi**2*E)/(23*(K*l/r_g[1])**2)
-                ratios['SC_2216.1_20'] = abs( fa/Fa + (cmx*fbx_min)/((1-fa/Fpex)*Fbx) + (cmy*fby_min)/((1-fa/Fpey)*Fby) )
-                ratios['SC_2216.1_21'] = abs(fa/Ft + fbx_min/Fbx + fby_min/Fby)
-                
+                if profile_asym == False:
+                        ratios['SC_2216.1_20'] = abs( fa/Fa + (cmx*fbx_min)/((1-fa/Fpex)*Fbx) + (cmy*fby_min)/((1-fa/Fpey)*Fby) )
+                        ratios['SC_2216.1_21'] = abs(fa/Ft + fbx_min/Fbx + fby_min/Fby)
+                elif profile_asym == True:
+                        ratios['SC_2216.1_20'] = abs( fa/Fa + ( max(cmx, cmy) *fb_min)/((1-fa/min(Fpex, Fpey))*Fb) ) #pour profilés sans axes de symétrie, expérimental
+                        ratios['SC_2216.1_21'] = abs(fa/Ft + fb_min/Fb) #pour profilés sans axes de symétrie, expérimental
 
-        ratios['SC_2216.2_21'] = abs( (fa/Ft if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby)
+        #Traction et flexion
+        if profile_asym == False:
+                ratios['SC_2216.2_21'] = abs( (fa/Ft if fa>=0 else 0) + fbx_max/Fbx + fby_max/Fby)
+        elif profile_asym == True:
+                ratios['SC_2216.2_21'] = abs( (fa/Ft if fa>=0 else 0) + fb_max/Fb)
 
         ratios['MAX'] = max(ratios.values())
 
