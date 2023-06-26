@@ -95,6 +95,12 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         r_g = section.get_rc() #rayons de giration pour calcul élancement
         (ixx_c, iyy_c, ixy_c) = section.get_ic() #pour déterminer axe fort et axe faible et choix de la limite en flexion pour les poutres en I et H
 
+        if abs(ixy_c) > 2e-6: #Si le profilé n'a aucune axes de symétrie, dépouillement spécifique à effectuer
+                profile_asym = True
+        else:
+                profile_asym = False
+
+
         #####################################IMPRESSION RESULTATS PROPRIETES DE SECTION################################################
         if bool(param_gene['impr_res']) is True:
                 section.display_results()
@@ -118,11 +124,11 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
 
         #################################################CALCUL LIMITES###############################################
-        limites = RCCM.criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E)
+        limites = RCCM.criteres(Sy, Su, ixx_c, iyy_c, r_g, type_profile, niveau_RCCM, K, l, E, profile_asym)
 
         #########################################CALCUL ET AFFICHAGE RATIOS########################################
 
-        ratios = RCCM.ratios(contraintes, limites, E, K, l, r_g, cmx, cmy)
+        ratios = RCCM.ratios(contraintes, limites, E, K, l, r_g, cmx, cmy, profile_asym)
         
 
         print('Facteurs de signes sur torseur : ', facteurs)
@@ -152,9 +158,11 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         table.add_row("fv", contraintes['fv'], "Fv", limites['Fv'], ratios['S_2213'], "Cisaillement ZVI2213") #la contrainte n'est pas un calcul moyenné, mais prend en compte les coeffs de cisaillement
 
         #Flexion
-        table.add_row("fbx", contraintes['fbx'], "Fbx", limites['Fbx'], ratios['F_2215_x'], "Flexion ZVI2215")
-        table.add_row("fby", contraintes['fby'], "Fby", limites['Fby'], ratios['F_2215_y'], "Flexion ZVI2215")
-        if abs(ixy_c) > 2e-6 :
+
+        if profile_asym == False :
+                table.add_row("fbx", contraintes['fbx'], "Fbx", limites['Fbx'], ratios['F_2215_x'], "Flexion ZVI2215")
+                table.add_row("fby", contraintes['fby'], "Fby", limites['Fby'], ratios['F_2215_y'], "Flexion ZVI2215")
+        elif profile_asym == True :
                 table.add_row("fb", contraintes['fb'], "Fb", limites['Fb'], ratios['F_2215'], "Flexion totale ZVI2215")
 
         table.add_section()
@@ -168,9 +176,10 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         
         #Combinaison traction et flexion
-        table.add_row("(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2")
-        if abs(ixy_c) > 2e-6 :
-                table.add_row("(21)", "", "", "", ratios['SC_2216.2_21_asym'], "Traction et flexion profilés sans symétrie ZVI2216.2")
+        if profile_asym == False:
+                table.add_row("(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2")
+        elif profile_asym == True :
+                table.add_row("(21)", "", "", "", ratios['SC_2216.2_21'], "Traction et flexion ZVI2216.2")
 
         table.add_section()
 
