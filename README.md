@@ -13,9 +13,9 @@ Download a copy of this repo, and run "launcher.py" with Python.
 Make sure that folders with steel section tables and images are located next to the launcher file, as in this repo.
 
 Dependancies needed are the following :
-- sectionproperties
-- rich
-- PySimpleGUI
+- [sectionproperties](https://github.com/robbievanleeuwen/section-properties)
+- [rich](https://github.com/Textualize/rich)
+- [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI)
 
 All dependancies available on PyPI, with pip
 
