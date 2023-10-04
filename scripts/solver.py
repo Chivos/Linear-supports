@@ -80,7 +80,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         Myy=torseur['My']*1000*facteurs[4]
         Mzz=torseur['Mz']*1000*facteurs[5]
 
-        stress_post = section.calculate_stress(N=N, Vx=Vx, Vy=Vy, Mxx=Mxx, Myy=Myy, Mzz=Mzz)
+        stress_post = section.calculate_stress(n=N, vx=Vx, vy=Vy, mxx=Mxx, myy=Myy, mzz=Mzz)
 
         Sy=param_gene['Sy']
         Su=param_gene['Su']
