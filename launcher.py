@@ -336,7 +336,7 @@ while True:
                 try:
                     torseur[index][key]=float(value.replace("," , ".")) #gérer les decimaux exprimés avec des . ou de ,
                 except:
-                    torseur[index][key] #si cellule du torseur vide, mettre 0 pour éviter de garder un string
+                    torseur[index][key]=0.0 #si cellule du torseur vide, mettre 0 pour éviter de garder un string
         
         if values['-ITER_SIGNS-'] == True:
             facteurs = list(product([1, -1], repeat=6))
