@@ -80,7 +80,7 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
         Myy=torseur['My']*1000*facteurs[4]
         Mzz=torseur['Mz']*1000*facteurs[5]
 
-        stress_post = section.calculate_stress(N=N, Vx=Vx, Vy=Vy, Mxx=Mxx, Myy=Myy, Mzz=Mzz)
+        stress_post = section.calculate_stress(n=N, vx=Vx, vy=Vy, mxx=Mxx, myy=Myy, mzz=Mzz)
 
         Sy=param_gene['Sy']
         Su=param_gene['Su']
@@ -194,15 +194,15 @@ def calcul_contraintes(section, torseur, param_gene, type_profile, facteurs):
 
         #####################################AFFICHAGE CONTRAINTES################################################
         if bool(param_gene['trac_res']) is True:
-                ax = stress_post.plot_stress_n_zz(nrows=3, ncols=3, figsize=(15, 10), render=False, title="Traction liée à l'effort normal")
+                ax = stress_post.plot_stress(stress="n_zz", nrows=3, ncols=3, figsize=(15, 10), render=False, title="Traction liée à l'effort normal", fmt="{x:.2f}", colorbar_label="MPa")
                 fig = ax.get_figure()
-                stress_post.plot_stress_mxx_zz(ax=fig.axes[1], title="Flexion liée au moment suivant X")
-                stress_post.plot_stress_myy_zz(ax=fig.axes[2], title="Flexion liée au moment suivant Y")
-                stress_post.plot_stress_vx_zxy(ax=fig.axes[3], title="Cisaillement lié à l'effort suivant X")
-                stress_post.plot_stress_vy_zxy(ax=fig.axes[4], title="Cisaillement lié à l'effort suivant Y")
-                stress_post.plot_stress_mzz_zxy(ax=fig.axes[5], title="Torsion liée au moment suivant Z")
-                stress_post.plot_stress_zz(ax=fig.axes[6], title="Traction tous chargements")
-                stress_post.plot_stress_zxy(ax=fig.axes[7], title="Cisaillement tous chargements")
+                stress_post.plot_stress(stress="mxx_zz", ax=fig.axes[1], title="Flexion liée au moment suivant X", fmt="{x:.2f}", colorbar_label="MPa")
+                stress_post.plot_stress(stress="myy_zz", ax=fig.axes[2], title="Flexion liée au moment suivant Y", fmt="{x:.2f}", colorbar_label="MPa")
+                stress_post.plot_stress(stress="vx_zxy", ax=fig.axes[3], title="Cisaillement lié à l'effort suivant X", fmt="{x:.2f}", colorbar_label="MPa")
+                stress_post.plot_stress(stress="vy_zxy", ax=fig.axes[4], title="Cisaillement lié à l'effort suivant Y", fmt="{x:.2f}", colorbar_label="MPa")
+                stress_post.plot_stress(stress="mzz_zxy", ax=fig.axes[5], title="Torsion liée au moment suivant Z", fmt="{x:.2f}", colorbar_label="MPa")
+                stress_post.plot_stress(stress="zz", ax=fig.axes[6], title="Traction tous chargements", fmt="{x:.2f}", colorbar_label="MPa")
+                stress_post.plot_stress(stress="zxy", ax=fig.axes[7], title="Cisaillement tous chargements", fmt="{x:.2f}", colorbar_label="MPa")
                 section.plot_centroids(ax=fig.axes[8], title="Géométrie")
                 plt.show()
 
