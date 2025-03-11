@@ -1,5 +1,5 @@
 import os
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 import csv
 from scripts import solver
 from itertools import product
